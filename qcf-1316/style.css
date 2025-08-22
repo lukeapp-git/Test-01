@@ -1,0 +1,86 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+
+
+
+/* Oculta los placeholders en todos los inputs de texto y número */
+input::placeholder {
+  color: transparent;
+}
+
+/* Si quieres limitarlo solo a los campos de clase 'campo' */
+input.campo::placeholder {
+  color: transparent;
+}
+
+
+
+
+
+
+.formulario {
+  position: relative;
+  width: 100%;
+  max-width: 800px; /* tamaño máximo carta */
+  margin: auto;
+}
+
+.fondo {
+  width: 100%;
+  display: block;
+}
+
+.campo {
+  position: absolute;
+  font-size: 12px;
+  padding: 2px;
+  border: 0px;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* ----- MODO MÓVIL ----- */
+@media (max-width: 768px) {
+  .fondo,
+  .pc-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .mobile-only label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  .mobile-only input,
+  .mobile-only textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+}
+
+input {
+  text-align: center;
+}
