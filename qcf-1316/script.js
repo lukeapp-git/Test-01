@@ -6,9 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableName = "5_Registros_Torque";
   const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
 
-  // Variable para guardar todos los registros disponibles
-  let registrosDisponibles = [];
-
   const body = {
     "Action": "Find",
     "Properties": {
@@ -35,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   .then(data => {
     if (data && data.length > 0) {
-      registrosDisponibles = data; // Guardamos todos los datos
       // Extraemos y obtenemos los isométricos únicos
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
@@ -57,47 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
       select.appendChild(option);
     });
   }
-  
-  // --- LÓGICA PARA EL SEGUNDO SELECT ---
-  const selectIsometrico = document.getElementById("isometrico");
-  
-  selectIsometrico.addEventListener('change', () => {
-    const isometricoSeleccionado = selectIsometrico.value;
-    
-    if (isometricoSeleccionado) {
-      // Filtramos los registros guardados para encontrar los que coinciden
-      const registrosFiltrados = registrosDisponibles.filter(
-        registro => registro.ID_Isometrico === isometricoSeleccionado
-      );
-      
-      // Extraemos los valores de "DiametroRatingVirtual" y obtenemos los únicos
-      const diametrosUnicos = [...new Set(
-        registrosFiltrados.map(registro => registro.DiametroRatingVirtual)
-      )];
-      
-      llenarSelectDiametroRating(diametrosUnicos);
-    } else {
-      // Si no se selecciona un isométrico, se limpia el segundo select
-      llenarSelectDiametroRating([]);
-    }
-  });
-
-  function llenarSelectDiametroRating(lista) {
-    const select = document.getElementById("diametroRating");
-    select.innerHTML = '<option value="">-- Selecciona Diámetro y Rating --</option>';
-    lista.forEach(valor => {
-      const option = document.createElement("option");
-      option.value = valor;
-      option.textContent = valor;
-      select.appendChild(option);
-    });
-  }
 
   // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
 
 
   // --- INICIO: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
-  // (Esta parte se ha mantenido exactamente como la tenías)
+  // (Esta parte la he mantenido exactamente como la tenías)
 
   const rango = [1, 2, 3, 4, 5, 6, 7];
 
@@ -142,4 +103,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- FIN: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
+
 });
