@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Action": "Find",
     "Properties": {
       "Locale": "en-US",
+      // Filtro optimizado: Le pedimos a AppSheet que nos traiga solo las filas sin protocolo
       "Filter": "ISBLANK([ID_Protocolo])"
     },
     "Rows": []
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   .then(data => {
     if (data && data.length > 0) {
       registrosDisponibles = data; // Guardamos todos los datos
+      // Extraemos y obtenemos los isométricos únicos
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
     } else {
@@ -47,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function llenarSelectIsometricos(lista) {
     const select = document.getElementById("isometrico");
-    select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
+    select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>'; // Limpiar
     lista.forEach(valor => {
       const option = document.createElement("option");
       option.value = valor;
@@ -56,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  // --- NUEVA LÓGICA PARA EL SEGUNDO SELECT ---
+  // --- LÓGICA PARA EL SEGUNDO SELECT ---
   const selectIsometrico = document.getElementById("isometrico");
   
   selectIsometrico.addEventListener('change', () => {
@@ -94,8 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
 
 
- // --- INICIO: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
-  // (Esta parte la he mantenido exactamente como la tenías)
+  // --- INICIO: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
+  // (Esta parte se ha mantenido exactamente como la tenías)
 
   const rango = [1, 2, 3, 4, 5, 6, 7];
 
