@@ -6,18 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableName = "5_Registros_Torque";
   const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
 
-  let registrosDisponibles = [];
-
   const body = {
     "Action": "Find",
     "Properties": {
       "Locale": "en-US",
+      // Filtro optimizado: Le pedimos a AppSheet que nos traiga solo las filas sin protocolo
       "Filter": "ISBLANK([ID_Protocolo])"
     },
     "Rows": []
   };
-
-  console.log("Iniciando llamada a la API de AppSheet...");
 
   fetch(url, {
     method: 'POST',
@@ -28,68 +25,27 @@ document.addEventListener("DOMContentLoaded", () => {
     body: JSON.stringify(body)
   })
   .then(response => {
-    // Punto de control: Vemos la respuesta completa del servidor
-    console.log("Respuesta cruda del servidor:", response);
     if (!response.ok) {
-      // Si hay un error (ej: 401, 403, 500), lo mostramos
-      throw new Error(`Error de Red o API: ${response.status} ${response.statusText}`);
+      throw new Error('Error en la respuesta de la API: ' + response.statusText);
     }
-    // Si la respuesta está vacía, no intentamos procesarla
-    const contentLength = response.headers.get("content-length");
-    if (contentLength === "0") {
-      return []; // Devolvemos una lista vacía para que no falle
-    }
-    return response.json(); // Solo procesamos si hay contenido
+    return response.json();
   })
   .then(data => {
-    console.log("Datos recibidos y procesados:", data);
     if (data && data.length > 0) {
-      registrosDisponibles = data;
+      // Extraemos y obtenemos los isométricos únicos
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
     } else {
-      console.log("No se encontraron registros de torque disponibles (la respuesta estaba vacía pero fue manejada).");
+      console.log("No se encontraron registros de torque disponibles.");
     }
   })
   .catch(error => {
-    console.error('Error final en la llamada a la API:', error);
+    console.error('Error al obtener datos de AppSheet:', error);
   });
 
   function llenarSelectIsometricos(lista) {
     const select = document.getElementById("isometrico");
-    select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
-    lista.forEach(valor => {
-      const option = document.createElement("option");
-      option.value = valor;
-      option.textContent = valor;
-      select.appendChild(option);
-    });
-  }
-  
-  const selectIsometrico = document.getElementById("isometrico");
-  
-  selectIsometrico.addEventListener('change', () => {
-    const isometricoSeleccionado = selectIsometrico.value;
-    
-    if (isometricoSeleccionado) {
-      const registrosFiltrados = registrosDisponibles.filter(
-        registro => registro.ID_Isometrico === isometricoSeleccionado
-      );
-      
-      // Creamos el valor "Diámetro-Rating" localmente
-      const diametrosUnicos = [...new Set(
-        registrosFiltrados.map(registro => `${registro.Diametro_Nominal}-${registro.Rating}`)
-      )];
-      
-      llenarSelectDiametroRating(diametrosUnicos);
-    } else {
-      llenarSelectDiametroRating([]);
-    }
-  });
-
-  function llenarSelectDiametroRating(lista) {
-    const select = document.getElementById("diametroRating");
-    select.innerHTML = '<option value="">-- Selecciona Diámetro y Rating --</option>';
+    select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>'; // Limpiar
     lista.forEach(valor => {
       const option = document.createElement("option");
       option.value = valor;
@@ -101,17 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
 
 
-  // --- TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
-  const rango = [1, 2, 3, 4, 5, 6, 7];
-  rango.forEach(num => {
-    // ... (tu código para los checkboxes se mantiene aquí sin cambios) ...
-  });
-});
-  // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
+  // --- INICIO: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
+  // (Esta parte la he mantenido exactamente como la tenías)
 
-
-  // --- INICIO: TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
   const rango = [1, 2, 3, 4, 5, 6, 7];
+
   rango.forEach(num => {
     const campo30 = document.getElementById(`flangeJoint${num}_30`);
     const campo70 = document.getElementById(`flangeJoint${num}_70`);
@@ -125,20 +75,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const gapFinal = document.getElementById(`gapFinal_${num}`);
 
     if (campo30 && check30) {
-      campo30.addEventListener("input", () => { check30.checked = campo30.value.trim() !== ""; });
+      campo30.addEventListener("input", () => {
+        check30.checked = campo30.value.trim() !== "";
+      });
     }
+
     if (campo70 && check70) {
-      campo70.addEventListener("input", () => { check70.checked = campo70.value.trim() !== ""; });
+      campo70.addEventListener("input", () => {
+        check70.checked = campo70.value.trim() !== "";
+      });
     }
+
     if (campo100 && check100) {
-      campo100.addEventListener("input", () => { check100.checked = campo100.value.trim() !== ""; });
+      campo100.addEventListener("input", () => {
+        check100.checked = campo100.value.trim() !== "";
+      });
     }
+
     if (campoPrincipal) {
       campoPrincipal.addEventListener("input", () => {
         const tieneValor = campoPrincipal.value.trim() !== "";
-        [gap1, gap2, gapFinal].forEach(gap => { if (gap) gap.checked = tieneValor; });
+        [gap1, gap2, gapFinal].forEach(gap => {
+          if (gap) gap.checked = tieneValor;
+        });
       });
     }
   });
-  // --- FIN: TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
+
+  // --- FIN: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
+
 });
