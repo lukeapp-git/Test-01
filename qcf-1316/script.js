@@ -6,15 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableName = "5_Registros_Torque";
   const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
 
-  // Guardaremos todos los registros disponibles para luego filtrarlos
+  // Variable para guardar todos los registros disponibles
   let registrosDisponibles = [];
 
-  // --- BODY de la llamada ---
   const body = {
     "Action": "Find",
     "Properties": {
       "Locale": "en-US",
-      // 👇 Traemos solo filas que no tengan protocolo asociado
+      // Filtro optimizado: Le pedimos a AppSheet que nos traiga solo las filas sin protocolo
       "Filter": "ISBLANK([ID_Protocolo])"
     },
     "Rows": []
@@ -31,28 +30,26 @@ document.addEventListener("DOMContentLoaded", () => {
     body: JSON.stringify(body)
   })
   .then(response => {
+    // Verificamos si la respuesta del servidor es correcta
     if (!response.ok) {
       throw new Error(`Error en la respuesta de la API: ${response.status} ${response.statusText}`);
     }
     return response.json();
   })
   .then(data => {
-    console.log("✅ Datos recibidos desde AppSheet:", data);
-
+    console.log("Datos recibidos de AppSheet:", data); // Punto clave de depuración
     if (data && data.length > 0) {
-      registrosDisponibles = data; // Guardamos todos los registros
-      // Obtenemos los isométricos únicos
+      registrosDisponibles = data; // Guardamos todos los datos
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
     } else {
-      console.log("⚠️ No se encontraron registros de torque disponibles.");
+      console.log("No se encontraron registros de torque disponibles o la respuesta está vacía.");
     }
   })
   .catch(error => {
-    console.error('❌ Error al obtener datos de AppSheet:', error);
+    console.error('Error final al procesar la petición:', error);
   });
 
-  // --- SELECT DE ISOMÉTRICOS ---
   function llenarSelectIsometricos(lista) {
     const select = document.getElementById("isometrico");
     select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
@@ -63,22 +60,21 @@ document.addEventListener("DOMContentLoaded", () => {
       select.appendChild(option);
     });
   }
-
-  // --- SELECT DE DIÁMETRO-RATING (segundo select dependiente) ---
+  
+  // --- LÓGICA PARA EL SEGUNDO SELECT ---
   const selectIsometrico = document.getElementById("isometrico");
   
   selectIsometrico.addEventListener('change', () => {
     const isometricoSeleccionado = selectIsometrico.value;
     
     if (isometricoSeleccionado) {
-      // Filtramos solo registros con ese isométrico
       const registrosFiltrados = registrosDisponibles.filter(
         registro => registro.ID_Isometrico === isometricoSeleccionado
       );
       
-      // Construimos la lista única de "Diámetro-Rating"
+      // Ahora leemos la columna física "DiametroRatingVirtual"
       const diametrosUnicos = [...new Set(
-        registrosFiltrados.map(registro => `${registro.Diametro_Nominal}-${registro.Rating}`)
+        registrosFiltrados.map(registro => registro.DiametroRatingVirtual)
       )];
       
       llenarSelectDiametroRating(diametrosUnicos);
@@ -98,12 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- FIN LÓGICA APPSHEET ---
+  // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
 
 
-  // --- INICIO: LÓGICA PARA CHECKS Y CAMPOS DEL FORMULARIO ---
+  // --- INICIO: TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
   const rango = [1, 2, 3, 4, 5, 6, 7];
-
   rango.forEach(num => {
     const campo30 = document.getElementById(`flangeJoint${num}_30`);
     const campo70 = document.getElementById(`flangeJoint${num}_70`);
@@ -116,37 +111,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const gap2 = document.getElementById(`gap2_${num}`);
     const gapFinal = document.getElementById(`gapFinal_${num}`);
 
-    // --- Torque 30% ---
     if (campo30 && check30) {
-      campo30.addEventListener("input", () => {
-        check30.checked = campo30.value.trim() !== "";
-      });
+      campo30.addEventListener("input", () => { check30.checked = campo30.value.trim() !== ""; });
     }
-
-    // --- Torque 70% ---
     if (campo70 && check70) {
-      campo70.addEventListener("input", () => {
-        check70.checked = campo70.value.trim() !== "";
-      });
+      campo70.addEventListener("input", () => { check70.checked = campo70.value.trim() !== ""; });
     }
-
-    // --- Torque 100% ---
     if (campo100 && check100) {
-      campo100.addEventListener("input", () => {
-        check100.checked = campo100.value.trim() !== "";
-      });
+      campo100.addEventListener("input", () => { check100.checked = campo100.value.trim() !== ""; });
     }
-
-    // --- Gaps (se marcan si hay valor en el campo principal) ---
     if (campoPrincipal) {
       campoPrincipal.addEventListener("input", () => {
         const tieneValor = campoPrincipal.value.trim() !== "";
-        [gap1, gap2, gapFinal].forEach(gap => {
-          if (gap) gap.checked = tieneValor;
-        });
+        [gap1, gap2, gapFinal].forEach(gap => { if (gap) gap.checked = tieneValor; });
       });
     }
   });
-
-  // --- FIN LÓGICA FORMULARIO ---
+  // --- FIN: TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
 });
