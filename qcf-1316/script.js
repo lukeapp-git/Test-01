@@ -6,11 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableName = "5_Registros_Torque";
   const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
 
+  // Variable para guardar todos los registros disponibles
+  let registrosDisponibles = [];
+
   const body = {
     "Action": "Find",
     "Properties": {
       "Locale": "en-US",
-      // Filtro optimizado: Le pedimos a AppSheet que nos traiga solo las filas sin protocolo
       "Filter": "ISBLANK([ID_Protocolo])"
     },
     "Rows": []
@@ -32,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })
   .then(data => {
     if (data && data.length > 0) {
-      // Extraemos y obtenemos los isométricos únicos
+      registrosDisponibles = data; // Guardamos todos los datos
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
     } else {
@@ -45,7 +47,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function llenarSelectIsometricos(lista) {
     const select = document.getElementById("isometrico");
-    select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>'; // Limpiar
+    select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
+    lista.forEach(valor => {
+      const option = document.createElement("option");
+      option.value = valor;
+      option.textContent = valor;
+      select.appendChild(option);
+    });
+  }
+  
+  // --- NUEVA LÓGICA PARA EL SEGUNDO SELECT ---
+  const selectIsometrico = document.getElementById("isometrico");
+  
+  selectIsometrico.addEventListener('change', () => {
+    const isometricoSeleccionado = selectIsometrico.value;
+    
+    if (isometricoSeleccionado) {
+      // Filtramos los registros guardados para encontrar los que coinciden
+      const registrosFiltrados = registrosDisponibles.filter(
+        registro => registro.ID_Isometrico === isometricoSeleccionado
+      );
+      
+      // Extraemos los valores de "DiametroRatingVirtual" y obtenemos los únicos
+      const diametrosUnicos = [...new Set(
+        registrosFiltrados.map(registro => registro.DiametroRatingVirtual)
+      )];
+      
+      llenarSelectDiametroRating(diametrosUnicos);
+    } else {
+      // Si no se selecciona un isométrico, se limpia el segundo select
+      llenarSelectDiametroRating([]);
+    }
+  });
+
+  function llenarSelectDiametroRating(lista) {
+    const select = document.getElementById("diametroRating");
+    select.innerHTML = '<option value="">-- Selecciona Diámetro y Rating --</option>';
     lista.forEach(valor => {
       const option = document.createElement("option");
       option.value = valor;
@@ -57,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
 
 
-  // --- INICIO: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
+ // --- INICIO: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
   // (Esta parte la he mantenido exactamente como la tenías)
 
   const rango = [1, 2, 3, 4, 5, 6, 7];
@@ -103,5 +140,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- FIN: TU LÓGICA ACTUAL PARA EL FORMULARIO ---
-
 });
