@@ -6,14 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableName = "5_Registros_Torque";
   const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
 
-  // Variable para guardar todos los registros disponibles
   let registrosDisponibles = [];
 
   const body = {
     "Action": "Find",
     "Properties": {
       "Locale": "en-US",
-      // Filtro optimizado: Le pedimos a AppSheet que nos traiga solo las filas sin protocolo
       "Filter": "ISBLANK([ID_Protocolo])"
     },
     "Rows": []
@@ -30,24 +28,31 @@ document.addEventListener("DOMContentLoaded", () => {
     body: JSON.stringify(body)
   })
   .then(response => {
-    // Verificamos si la respuesta del servidor es correcta
+    // Punto de control: Vemos la respuesta completa del servidor
+    console.log("Respuesta cruda del servidor:", response);
     if (!response.ok) {
-      throw new Error(`Error en la respuesta de la API: ${response.status} ${response.statusText}`);
+      // Si hay un error (ej: 401, 403, 500), lo mostramos
+      throw new Error(`Error de Red o API: ${response.status} ${response.statusText}`);
     }
-    return response.json();
+    // Si la respuesta está vacía, no intentamos procesarla
+    const contentLength = response.headers.get("content-length");
+    if (contentLength === "0") {
+      return []; // Devolvemos una lista vacía para que no falle
+    }
+    return response.json(); // Solo procesamos si hay contenido
   })
   .then(data => {
-    console.log("Datos recibidos de AppSheet:", data); // Punto clave de depuración
+    console.log("Datos recibidos y procesados:", data);
     if (data && data.length > 0) {
-      registrosDisponibles = data; // Guardamos todos los datos
+      registrosDisponibles = data;
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
     } else {
-      console.log("No se encontraron registros de torque disponibles o la respuesta está vacía.");
+      console.log("No se encontraron registros de torque disponibles (la respuesta estaba vacía pero fue manejada).");
     }
   })
   .catch(error => {
-    console.error('Error final al procesar la petición:', error);
+    console.error('Error final en la llamada a la API:', error);
   });
 
   function llenarSelectIsometricos(lista) {
@@ -61,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  // --- LÓGICA PARA EL SEGUNDO SELECT ---
   const selectIsometrico = document.getElementById("isometrico");
   
   selectIsometrico.addEventListener('change', () => {
@@ -72,9 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
         registro => registro.ID_Isometrico === isometricoSeleccionado
       );
       
-      // Ahora leemos la columna física "DiametroRatingVirtual"
+      // Creamos el valor "Diámetro-Rating" localmente
       const diametrosUnicos = [...new Set(
-        registrosFiltrados.map(registro => registro.DiametroRatingVirtual)
+        registrosFiltrados.map(registro => `${registro.Diametro_Nominal}-${registro.Rating}`)
       )];
       
       llenarSelectDiametroRating(diametrosUnicos);
@@ -94,6 +98,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
+
+
+  // --- TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
+  const rango = [1, 2, 3, 4, 5, 6, 7];
+  rango.forEach(num => {
+    // ... (tu código para los checkboxes se mantiene aquí sin cambios) ...
+  });
+});
   // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
 
 
