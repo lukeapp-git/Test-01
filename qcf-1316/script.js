@@ -1,6 +1,48 @@
-// Aquí luego conectaremos con Google Sheets / AppSheet
-console.log("Formulario QCF-1316 cargado");
+const appId = "ef283a04-64e5-4bcb-8418-cc59797f7856";
+const appAccessKey = "V2-6Johj-GSk5e-lZlPM-9TUqL-8dXq6-0SMGT-8MWPB-oOrdo";
+const tableName = "5_Registros_Torque";
 
+const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
+
+const body = {
+  "Action": "Find",
+  "Properties": {
+    "Locale": "en-US"
+  },
+  "Rows": []
+};
+
+fetch(url, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'ApplicationAccessKey': appAccessKey
+  },
+  body: JSON.stringify(body)
+})
+.then(response => response.json())
+.then(data => {
+  const sinProtocolo = data.filter(row => !row.ID_Protocolo || row.ID_Protocolo.trim() === "");
+  const isometricosUnicos = [...new Set(sinProtocolo.map(row => row.ID_Isometrico))];
+  llenarSelectIsometricos(isometricosUnicos);
+})
+.catch(error => {
+  console.error('Error al obtener datos de AppSheet:', error);
+});
+
+function llenarSelectIsometricos(lista) {
+  const select = document.getElementById("isometrico");
+
+  // Limpiar opciones previas
+  select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
+
+  lista.forEach(valor => {
+    const option = document.createElement("option");
+    option.value = valor;
+    option.textContent = valor;
+    select.appendChild(option);
+  });
+}
 
   // Rango de joints que quieres controlar
   const rango = [1, 2, 3, 4, 5, 6, 7];
