@@ -1,3 +1,8 @@
+document.addEventListener("DOMContentLoaded", () => {
+  // Tu código completo aquí dentro
+
+
+
 const appId = "ef283a04-64e5-4bcb-8418-cc59797f7856";
 const appAccessKey = "V2-6Johj-GSk5e-lZlPM-9TUqL-8dXq6-0SMGT-8MWPB-oOrdo";
 const tableName = "5_Registros_Torque";
@@ -97,3 +102,7 @@ function llenarSelectIsometricos(lista) {
   });
 
 
+
+
+
+});
