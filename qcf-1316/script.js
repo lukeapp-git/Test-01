@@ -6,14 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableName = "5_Registros_Torque";
   const url = `https://api.appsheet.com/api/v2/apps/${appId}/tables/${tableName}/Action`;
 
-  // Variable para guardar todos los registros disponibles
+  // Guardaremos todos los registros disponibles para luego filtrarlos
   let registrosDisponibles = [];
 
+  // --- BODY de la llamada ---
   const body = {
     "Action": "Find",
     "Properties": {
       "Locale": "en-US",
-      // Filtro optimizado: Le pedimos a AppSheet que nos traiga solo las filas sin protocolo
+      // 👇 Traemos solo filas que no tengan protocolo asociado
       "Filter": "ISBLANK([ID_Protocolo])"
     },
     "Rows": []
@@ -36,19 +37,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return response.json();
   })
   .then(data => {
-    console.log("Datos recibidos:", data);
+    console.log("✅ Datos recibidos desde AppSheet:", data);
+
     if (data && data.length > 0) {
-      registrosDisponibles = data; // Guardamos todos los datos
+      registrosDisponibles = data; // Guardamos todos los registros
+      // Obtenemos los isométricos únicos
       const isometricosUnicos = [...new Set(data.map(row => row.ID_Isometrico))];
       llenarSelectIsometricos(isometricosUnicos);
     } else {
-      console.log("No se encontraron registros de torque disponibles.");
+      console.log("⚠️ No se encontraron registros de torque disponibles.");
     }
   })
   .catch(error => {
-    console.error('Error al obtener datos de AppSheet:', error);
+    console.error('❌ Error al obtener datos de AppSheet:', error);
   });
 
+  // --- SELECT DE ISOMÉTRICOS ---
   function llenarSelectIsometricos(lista) {
     const select = document.getElementById("isometrico");
     select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
@@ -59,20 +63,20 @@ document.addEventListener("DOMContentLoaded", () => {
       select.appendChild(option);
     });
   }
-  
-  // --- LÓGICA PARA EL SEGUNDO SELECT ---
+
+  // --- SELECT DE DIÁMETRO-RATING (segundo select dependiente) ---
   const selectIsometrico = document.getElementById("isometrico");
   
   selectIsometrico.addEventListener('change', () => {
     const isometricoSeleccionado = selectIsometrico.value;
     
     if (isometricoSeleccionado) {
+      // Filtramos solo registros con ese isométrico
       const registrosFiltrados = registrosDisponibles.filter(
         registro => registro.ID_Isometrico === isometricoSeleccionado
       );
       
-      // LÓGICA MEJORADA: Creamos el valor "Diámetro-Rating" aquí mismo.
-      // Esto es más robusto que depender de una columna virtual de AppSheet.
+      // Construimos la lista única de "Diámetro-Rating"
       const diametrosUnicos = [...new Set(
         registrosFiltrados.map(registro => `${registro.Diametro_Nominal}-${registro.Rating}`)
       )];
@@ -94,12 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- FIN: LÓGICA PARA CONECTAR CON APPSHEET ---
+  // --- FIN LÓGICA APPSHEET ---
 
 
-  // --- INICIO: TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
-  // (Esta parte se ha mantenido exactamente como la tenías)
-
+  // --- INICIO: LÓGICA PARA CHECKS Y CAMPOS DEL FORMULARIO ---
   const rango = [1, 2, 3, 4, 5, 6, 7];
 
   rango.forEach(num => {
@@ -114,24 +116,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const gap2 = document.getElementById(`gap2_${num}`);
     const gapFinal = document.getElementById(`gapFinal_${num}`);
 
+    // --- Torque 30% ---
     if (campo30 && check30) {
       campo30.addEventListener("input", () => {
         check30.checked = campo30.value.trim() !== "";
       });
     }
 
+    // --- Torque 70% ---
     if (campo70 && check70) {
       campo70.addEventListener("input", () => {
         check70.checked = campo70.value.trim() !== "";
       });
     }
 
+    // --- Torque 100% ---
     if (campo100 && check100) {
       campo100.addEventListener("input", () => {
         check100.checked = campo100.value.trim() !== "";
       });
     }
 
+    // --- Gaps (se marcan si hay valor en el campo principal) ---
     if (campoPrincipal) {
       campoPrincipal.addEventListener("input", () => {
         const tieneValor = campoPrincipal.value.trim() !== "";
@@ -142,5 +148,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- FIN: TU LÓGICA ORIGINAL PARA EL FORMULARIO ---
+  // --- FIN LÓGICA FORMULARIO ---
 });
