@@ -1,0 +1,83 @@
+/* General Body Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Header Styles */
+  header {
+    background: #005f73;
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+  }
+  
+  /* Main Content Styles */
+  main {
+    padding: 2rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  
+  .info {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .info h2 {
+    color: #005f73;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Form List and Items */
+  .form-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .form-item {
+    display: block;
+    width: 80%;
+    max-width: 500px;
+    padding: 1.25rem 2rem;
+    background-color: #fff;
+    color: #005f73;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    text-align: center;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .form-item:hover, .form-item:focus {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    background-color: #eaf4f4;
+    color: #003e4d;
+  }
+  
+  /* Footer Styles */
+  footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    background-color: #333;
+    color: #fff;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
