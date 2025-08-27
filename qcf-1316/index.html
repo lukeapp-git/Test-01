@@ -243,10 +243,9 @@
     placeholder="Subsistema"
     style="top: 23.2%; left: 29%; width: 15%;">
 
-    <select id="isometrico" class="campo pc-only"
+    <input type="text" id="isometrico" class="campo pc-only"
+    placeholder="Isométrico"
     style="top: 23.2%; left: 52.9%; width: 15%;">
-      <option value="">-- Selecciona un Isométrico --</option>
-    </select>
 
     <input type="text" id="hoja" class="campo pc-only"
     placeholder="Hoja"
@@ -272,10 +271,9 @@
     placeholder="Flange material"
     style="top: 32.8%; left: 31.5%; width: 12.5%;">
 
-    <select id="diametroRating" class="campo pc-only" 
-            style="top: 33.2%; left: 66.3%; width: 21.5%;">
-        <option value="">-- Esperando Datos --</option>
-    </select>
+    <input type="text" id="diametroRating" class="campo pc-only" 
+           placeholder="Diámetro Rating"
+           style="top: 33.2%; left: 66.3%; width: 21.5%;">
 
     <input type="text" id="gasketType" class="campo pc-only"
     placeholder="Gasket type"
@@ -589,7 +587,7 @@
         <label for="subsistema">Subsistema</label>
         <input type="text" id="subsistema-m">
       
-        <label for="isometrico">Isométrico</label>
+        <label for="isometrico-m">Isométrico</label>
         <input type="text" id="isometrico-m">
       
         <label for="hoja">Hoja</label>
@@ -658,19 +656,10 @@
         llenarSelectProtocolos(todosLosProtocolos);
       }
 
-      // Llenar select de isométricos (modo creación)
+      // Llenar select de isométricos (modo creación) - Ahora input
       function llenarSelectIsometricos(lista) {
-        const select = document.getElementById("isometrico");
-        if (select) {
-          select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
-          
-          lista.forEach(valor => {
-            const option = document.createElement("option");
-            option.value = valor;
-            option.textContent = valor;
-            select.appendChild(option);
-          });
-        }
+        // Ya no es necesario llenar un select, pero mantenemos la función por compatibilidad
+        console.log('Isométricos disponibles:', lista);
       }
 
       // Llenar select de protocolos (modo visualización)
@@ -708,21 +697,50 @@
         // Llenar campos del protocolo
         llenarCamposProtocolo(protocolo);
 
-        // Cargar registros asociados
-        const registrosProtocolo = todosLosRegistros.filter(r => r.ID_Protocolo === protocoloId);
-        llenarCamposRegistros(registrosProtocolo);
+        // Cargar registros asociados basándose en Uniones_En_Protocolo
+        cargarUnionesProtocolo(protocolo);
+      }
+
+      // Nueva función para cargar uniones basándose en Uniones_En_Protocolo
+      async function cargarUnionesProtocolo(protocolo) {
+        if (!protocolo.Uniones_En_Protocolo) return;
+
+        // Convertir EnumList a array
+        let unionesIds = [];
+        if (typeof protocolo.Uniones_En_Protocolo === 'string') {
+          // Si viene como string separado por comas
+          unionesIds = protocolo.Uniones_En_Protocolo.split(',').map(id => id.trim());
+        } else if (Array.isArray(protocolo.Uniones_En_Protocolo)) {
+          unionesIds = protocolo.Uniones_En_Protocolo;
+        } else {
+          // Si es un solo valor
+          unionesIds = [protocolo.Uniones_En_Protocolo];
+        }
+
+        // Filtrar solo los primeros 7
+        unionesIds = unionesIds.slice(0, 7);
+
+        // Buscar los registros correspondientes
+        const registrosUniones = unionesIds.map(idRegistro => {
+          return todosLosRegistros.find(r => r.ID_Registro === idRegistro);
+        }).filter(Boolean); // Remover undefined
+
+        // Llenar los campos con estos registros
+        llenarCamposRegistrosEspecifico(registrosUniones, protocolo.Torque_100_Objetivo);
       }
 
       // Llenar campos del protocolo
       function llenarCamposProtocolo(protocolo) {
         const campos = {
           'subsistema': protocolo.Sub_Sistema,
+          'isometrico': protocolo.ID_Isometrico, // Ahora es input
           'hoja': protocolo.Hoja_Referencia,
           'area': protocolo.Area_Linea,
           'torque': protocolo.Torque_100_Objetivo,
           'herramienta': protocolo.Nombre_Herramienta,
           'serie': protocolo.Serie_Herramienta,
           'flangeMaterial': protocolo.Flange_Material,
+          'diametroRating': protocolo.DiametroRating_Protocolo, // Ahora es input
           'gasketType': protocolo.Gasket_Type,
           'gasketMaterial': protocolo.Gasket_Material,
           'boltMaterial': protocolo.Bolt_Material,
@@ -740,28 +758,77 @@
           }
         });
 
-        // Llenar selects especiales
-        if (protocolo.ID_Isometrico) {
-          const isometricoSelect = document.getElementById("isometrico");
-          if (isometricoSelect) {
-            // Agregar opción si no existe
-            const existeOpcion = Array.from(isometricoSelect.options).some(option => option.value === protocolo.ID_Isometrico);
-            if (!existeOpcion) {
-              const option = document.createElement("option");
-              option.value = protocolo.ID_Isometrico;
-              option.textContent = protocolo.ID_Isometrico;
-              isometricoSelect.appendChild(option);
-            }
-            isometricoSelect.value = protocolo.ID_Isometrico;
-          }
+        // Sincronizar gasketSize con diametroRating
+        const gasketSize = document.getElementById("gasketSize");
+        if (gasketSize && protocolo.DiametroRating_Protocolo) {
+          gasketSize.value = protocolo.DiametroRating_Protocolo;
+        }
+      }
+
+      // Nueva función específica para llenar registros con cálculos
+      function llenarCamposRegistrosEspecifico(registros, torqueObjetivo) {
+        // Limpiar todos los campos primero
+        for (let i = 1; i <= 7; i++) {
+          limpiarFilaUnion(i);
         }
 
-        if (protocolo.DiametroRating_Protocolo) {
-          const diametroSelect = document.getElementById("diametroRating");
-          if (diametroSelect) {
-            diametroSelect.innerHTML = `<option value="${protocolo.DiametroRating_Protocolo}">${protocolo.DiametroRating_Protocolo}</option>`;
+        // Llenar con los registros específicos
+        registros.forEach((registro, index) => {
+          if (index < 7) {
+            const fila = index + 1;
+            llenarFilaUnionEspecifica(fila, registro, torqueObjetivo);
           }
+        });
+      }
+
+      // Nueva función para llenar una fila con cálculos específicos
+      function llenarFilaUnionEspecifica(fila, registro, torqueObjetivo) {
+        // 1. Extraer últimos 4 caracteres del ID_Union_Maestra para flangeJoint
+        const flangeJointCampo = document.getElementById(`flangeJoint${fila}`);
+        if (flangeJointCampo && registro.ID_Union_Maestra) {
+          const ultimos4 = registro.ID_Union_Maestra.slice(-4);
+          flangeJointCampo.value = ultimos4;
         }
+
+        // 2. Calcular porcentajes del torque objetivo
+        if (torqueObjetivo) {
+          const torque100 = parseFloat(torqueObjetivo);
+          const torque30 = Math.round(torque100 * 0.3);
+          const torque70 = Math.round(torque100 * 0.7);
+
+          // Llenar campos de torque calculados
+          const campo30 = document.getElementById(`flangeJoint${fila}_30`);
+          const campo70 = document.getElementById(`flangeJoint${fila}_70`);
+          const campo100 = document.getElementById(`flangeJoint${fila}_100`);
+
+          if (campo30) campo30.value = torque30;
+          if (campo70) campo70.value = torque70;
+          if (campo100) campo100.value = torque100;
+        }
+
+        // 3. Llenar conteo de hilos expuestos
+        const threadsCampo = document.getElementById(`threads_${fila}`);
+        if (threadsCampo && registro.Conteo_Hilos_Expuestos !== undefined) {
+          threadsCampo.value = registro.Conteo_Hilos_Expuestos;
+        }
+
+        // 4. Llenar checkboxes si existen datos
+        const checkboxes = {
+          [`torque30_${fila}`]: registro.Torque_30_Done,
+          [`torque70_${fila}`]: registro.Torque_70_Done,
+          [`torque100_${fila}`]: registro.Torque_100_Done,
+          [`gap1_${fila}`]: registro.Gap_Check_1,
+          [`gap2_${fila}`]: registro.Gap_Check_2,
+          [`gapFinal_${fila}`]: registro.Gap_Check_Final
+        };
+
+        Object.keys(checkboxes).forEach(checkId => {
+          const check = document.getElementById(checkId);
+          if (check) {
+            const valor = checkboxes[checkId];
+            check.checked = valor === true || valor === "TRUE" || valor === "true" || valor === 1;
+          }
+        });
       }
 
       // Llenar campos de registros (uniones)
@@ -843,9 +910,9 @@
       function limpiarFormulario() {
         // Limpiar campos principales
         const camposPrincipales = [
-          'subsistema', 'hoja', 'area', 'torque', 'herramienta', 'serie',
-          'flangeMaterial', 'gasketType', 'gasketMaterial', 'boltMaterial',
-          'boltSize', 'boltQty', 'lubricantName', 'washerDesc'
+          'subsistema', 'isometrico', 'hoja', 'area', 'torque', 'herramienta', 'serie',
+          'flangeMaterial', 'diametroRating', 'gasketType', 'gasketMaterial', 'gasketSize',
+          'boltMaterial', 'boltSize', 'boltQty', 'lubricantName', 'washerDesc'
         ];
 
         camposPrincipales.forEach(id => {
@@ -853,14 +920,9 @@
           if (campo) campo.value = '';
         });
 
-        // Limpiar selects
+        // Limpiar select de protocolo
         const protocoloSelect = document.getElementById("protocoloSelect");
-        const isometricoSelect = document.getElementById("isometrico");
-        const diametroSelect = document.getElementById("diametroRating");
-        
         if (protocoloSelect) protocoloSelect.selectedIndex = 0;
-        if (isometricoSelect) isometricoSelect.selectedIndex = 0;
-        if (diametroSelect) diametroSelect.innerHTML = '<option value="">-- Esperando Datos --</option>';
 
         // Limpiar todas las filas de uniones
         for (let i = 1; i <= 7; i++) {
@@ -894,12 +956,27 @@
         });
       }
 
+      // Sincronizar gasketSize con diametroRating
+      function sincronizarGasketSize() {
+        const diametroRating = document.getElementById("diametroRating");
+        const gasketSize = document.getElementById("gasketSize");
+        
+        if (diametroRating && gasketSize) {
+          diametroRating.addEventListener("input", () => {
+            gasketSize.value = diametroRating.value;
+          });
+        }
+      }
+
       // Event listener para el modo
       const modoSelect = document.getElementById("modoSelect");
       if (modoSelect) {
         modoSelect.addEventListener("change", configurarModo);
         configurarModo(); // Configurar modo inicial
       }
+
+      // Configurar sincronización de gasketSize
+      sincronizarGasketSize();
 
       // Configurar eventos de torque y gap (código original)
       const rango = [1, 2, 3, 4, 5, 6, 7];
