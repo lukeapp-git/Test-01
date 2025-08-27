@@ -1,239 +1,187 @@
+/* --- Estilos Generales --- */
 body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f8f9fa;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: #f4f7f6;
+  color: #333;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
 
+/* --- Contenedor Principal de la Página --- */
+.page-container {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+}
 
+/* --- Barra Lateral y Grilla de Control --- */
+.sidebar {
+  width: 450px;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease-in-out;
+}
 
-    .formulario {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      margin: auto;
-    }
+.sidebar-header h2 {
+  color: #005f73;
+  text-align: center;
+  margin-top: 0;
+  font-weight: 400;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
 
-    .fondo {
-      width: 100%;
-      display: block;
-    }
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
 
-    .campo {
-      position: absolute;
-      font-size: 12px;
-      padding: 2px;
-      border: 0px;
-      border-radius: 4px;
-      background-color: transparent;
-    }
+.grid-item {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .mobile-only {
-      display: none;
-    }
+.grid-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-    /* Panel de Control */
-    .panel-control {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      align-items: center;
-    }
+.grid-item.grid-span-2 {
+  grid-column: span 2;
+}
 
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
+.grid-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: #005f73;
+  font-size: 0.9rem;
+}
 
-    .control-group label {
-      font-weight: bold;
-      color: #333;
-      font-size: 12px;
-    }
+.grid-item p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
 
-    .control-group select {
-      min-width: 250px;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
+/* --- Estilos para Controles en la Grilla --- */
+.grid-item label {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
 
-    .botones {
-      display: flex;
-      gap: 10px;
-      margin-left: auto;
-    }
+.grid-item select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
 
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.3s;
-    }
+.grid-item select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
 
-    .btn-primary {
-      background-color: #007bff;
-      color: white;
-    }
+.botones {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
 
-    .btn-primary:hover {
-      background-color: #0056b3;
-    }
+.btn {
+  flex-grow: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
 
-    .btn-secondary {
-      background-color: #6c757d;
-      color: white;
-    }
+.btn-primary { background-color: #007bff; color: white; }
+.btn-primary:hover { background-color: #0056b3; transform: translateY(-2px); }
+.btn-secondary { background-color: #6c757d; color: white; }
+.btn-secondary:hover { background-color: #545b62; transform: translateY(-2px); }
+.btn-success { background-color: #28a745; color: white; }
+.btn-success:hover { background-color: #1e7e34; transform: translateY(-2px); }
 
-    .btn-secondary:hover {
-      background-color: #545b62;
-    }
+/* --- Área Principal del Formulario --- */
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #e9ecef;
+}
 
-    .btn-success {
-      background-color: #28a745;
-      color: white;
-    }
+.formulario {
+  position: relative;
+  width: 8.5in;
+  height: 11in;
+  background-color: white;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  transform-origin: top center;
+  transition: transform 0.3s ease;
+}
 
-    .btn-success:hover {
-      background-color: #1e7e34;
-    }
+.formulario:hover {
+    transform: scale(1.01);
+}
 
-    /* Estilos de impresión optimizados para carta 300 DPI */
-    @media print {
-      .panel-control {
-        display: none !important;
-      }
-      
-      body {
-        background: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-      
-      .formulario {
-        max-width: 100% !important;
-        width: 8.5in !important; /* Ancho carta */
-        height: 11in !important; /* Alto carta */
-        margin: 0 !important;
-        padding: 0 !important;
-        page-break-inside: avoid !important;
-        position: relative !important;
-      }
+.fondo {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-      .fondo {
-        width: 8.5in !important;
-        height: 11in !important;
-        max-width: none !important;
-        object-fit: contain !important;
-        display: block !important;
-      }
+.campo {
+  position: absolute;
+  font-size: 12px;
+  text-align: center;
+  padding: 2px;
+  border: 0;
+  background-color: transparent;
+}
 
-      .campo {
-        font-size: 10px !important;
-        background-color: transparent !important;
-        border: none !important;
-        color: black !important;
-        -webkit-appearance: none !important;
-      }
-
-      /* Asegurar que los checkboxes se impriman */
-      input[type="checkbox"] {
-        -webkit-appearance: checkbox !important;
-        appearance: checkbox !important;
-        width: 12px !important;
-        height: 12px !important;
-      }
-
-      @page {
-        size: letter !important; /* 8.5in x 11in */
-        margin: 0 !important;
-      }
-    }
-
-    /* Modo móvil */
-    @media (max-width: 768px) {
-      .fondo,
-      .pc-only {
-        display: none;
-      }
-
-      .mobile-only {
-        display: block;
-        padding: 10px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      }
-
-      .mobile-only label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-      }
-
-      .mobile-only input,
-      .mobile-only textarea {
-        width: 100%;
-        margin-top: 5px;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-
-      .panel-control {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .control-group select {
-        min-width: 100%;
-      }
-
-      .botones {
-        margin-left: 0;
-        justify-content: center;
-      }
-    }
-
-    input {
-      text-align: center;
-    }
-
-    /* Status indicator */
-    .status {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-    }
-
-    .status.en-proceso {
-      background-color: #fff3cd;
-      color: #856404;
-    }
-
-    .status.completado {
-      background-color: #d4edda;
-      color: #155724;
-    }
-
-    input::placeholder {
-      color: transparent;
-    }
-
-    input.campo::placeholder {
-      color: transparent;
-    }
+/* --- Estilos de Impresión --- */
+@media print {
+  body {
+    background: none !important;
+  }
+  .sidebar, .main-content {
+    display: none !important;
+  }
+  .page-container {
+    display: block !important;
+  }
+  .formulario {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    box-shadow: none;
+    transform: none;
+  }
+  .campo {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  @page {
+    size: letter;
+    margin: 0;
+  }
+}
