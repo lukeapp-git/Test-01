@@ -4,9 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QCF-1316 Torque Manual</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    input::placeholder {
+      color: transparent;
+    }
+
+    input.campo::placeholder {
+      color: transparent;
+    }
+
+    .formulario {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .fondo {
+      width: 100%;
+      display: block;
+    }
+
+    .campo {
+      position: absolute;
+      font-size: 12px;
+      padding: 2px;
+      border: 0px;
+      border-radius: 4px;
+      background-color: transparent;
+    }
+
+    .mobile-only {
+      display: none;
+    }
+
+    /* Panel de Control */
+    .panel-control {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .control-group label {
+      font-weight: bold;
+      color: #333;
+      font-size: 12px;
+    }
+
+    .control-group select {
+      min-width: 250px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .botones {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #1e7e34;
+    }
+
+    /* Estilos de impresión */
+    @media print {
+      .panel-control {
+        display: none;
+      }
+      
+      body {
+        background: white;
+        padding: 0;
+      }
+      
+      .formulario {
+        max-width: 100%;
+      }
+    }
+
+    /* Modo móvil */
+    @media (max-width: 768px) {
+      .fondo,
+      .pc-only {
+        display: none;
+      }
+
+      .mobile-only {
+        display: block;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      .mobile-only label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      .mobile-only input,
+      .mobile-only textarea {
+        width: 100%;
+        margin-top: 5px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .panel-control {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-group select {
+        min-width: 100%;
+      }
+
+      .botones {
+        margin-left: 0;
+        justify-content: center;
+      }
+    }
+
+    input {
+      text-align: center;
+    }
+
+    /* Status indicator */
+    .status {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .status.en-proceso {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .status.completado {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  </style>
 </head>
 <body>
+  <!-- Panel de Control -->
+  <div class="panel-control">
+    <div class="control-group">
+      <label for="protocoloSelect">Ver Protocolo Existente:</label>
+      <select id="protocoloSelect">
+        <option value="">Cargando protocolos...</option>
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label for="modoSelect">Modo:</label>
+      <select id="modoSelect">
+        <option value="ver">👁️ Solo Ver</option>
+        <option value="editar">✏️ Editar</option>
+      </select>
+    </div>
+
+    <div class="botones">
+      <button class="btn btn-secondary" onclick="limpiarFormulario()">
+        🔄 Nuevo
+      </button>
+      <button class="btn btn-success" onclick="imprimirFormulario()">
+        🖨️ Imprimir
+      </button>
+    </div>
+  </div>
+
   <div class="formulario">
     <!-- Imagen del formulario (solo visible en PC) -->
     <img src="assets/formulario.png" class="fondo pc-only" alt="Formulario QCF-1316">
@@ -18,408 +245,344 @@
 
     <select id="isometrico" class="campo pc-only"
     style="top: 23.2%; left: 52.9%; width: 15%;">
-  <option value="">-- Selecciona un Isométrico --</option>
-</select>
+      <option value="">-- Selecciona un Isométrico --</option>
+    </select>
 
-  <input type="text" id="hoja" class="campo pc-only"
+    <input type="text" id="hoja" class="campo pc-only"
     placeholder="Hoja"
     style="top: 23.2%; left: 77.3%; width: 10%;">
 
-  <input type="text" id="area" class="campo pc-only"
+    <input type="text" id="area" class="campo pc-only"
     placeholder="Area"
     style="top: 25.5%; left: 29%; width: 15%;">
 
-  <input type="number" id="torque" class="campo pc-only"
+    <input type="number" id="torque" class="campo pc-only"
     placeholder="Torque Objetivo [Nm]"
     style="top: 25.5%; left: 67.9%; width: 20%;">
 
-  <input type="text" id="herramienta" class="campo pc-only"
+    <input type="text" id="herramienta" class="campo pc-only"
     placeholder="Tipo de Llave"
     style="top: 28.7%; left: 29%; width: 15%;">
 
-  <input type="text" id="serie" class="campo pc-only"
+    <input type="text" id="serie" class="campo pc-only"
     placeholder="Torque Serial No."
     style="top: 28.7%; left: 66.3%; width: 21%;">
 
     <input type="text" id="flangeMaterial" class="campo pc-only"
-  placeholder="Flange material"
-  style="top: 32.8%; left: 31.5%; width: 12.5%;">
-
-<!-- 2. Flange size -->
-<select id="diametroRating" class="campo pc-only" 
-        style="top: 33.2%; left: 66.3%; width: 21.5%;">
-    <option value="">-- Esperando Isométrico --</option>
-</select>
-
-<!-- 3. Gasket type -->
-<input type="text" id="gasketType" class="campo pc-only"
-  placeholder="Gasket type"
-  style="top: 36.5%; left: 31.5%; width: 12.5%;">
-
-<!-- 4. Gasket material -->
-<input type="text" id="gasketMaterial" class="campo pc-only"
-  placeholder="Material Empaquetadura"
-  style="top: 35.7%; left: 66.3%; width: 21%;">
-
-<!-- 5. Gasket size -->
-<input type="text" id="gasketSize" class="campo pc-only"
-  placeholder="Empaq. Size [inch] / Rating"
-  style="top: 37.6%; left: 66.3%; width: 21%;">
-
-<!-- 6. Bolt material -->
-<input type="text" id="boltMaterial" class="campo pc-only"
-  placeholder="Bolt material"
-  style="top: 40%; left: 31.5%; width: 12.5%;">
-
-<!-- 7. Bolt size -->
-<input type="text" id="boltSize" class="campo pc-only"
-  placeholder="Bolt size [inch] / length [mm]"
-  style="top: 40.2%; left: 66.3%; width: 21%;">
-
-<!-- 8. Bolt Quantity -->
-<input type="number" id="boltQty" class="campo pc-only"
-  placeholder="Bolt Quantity"
-  style="top: 43.6%; left: 31.5%; width: 12.5%;">
-
-<!-- 10. Lubricant name and type -->
-<input type="text" id="lubricantName" class="campo pc-only"
-  placeholder="Nombre Lubricante"
-  value="Depac 505"
-  style="top: 44.8%; left: 66.3%; width: 21%;">
-
-<!-- 11. Washer material and description -->
-<input type="text" id="washerDesc" class="campo pc-only"
-  placeholder=" "
-  style="top: 47%; left: 46%; width: 41.3%;">
-
-  <!-- JOINT ASSEMBLY PARAMETER RECORDS -->
-<!-- Ejemplo de la fila 1 -->
-<input type="text" id="flangeJoint1" class="campo pc-only"
-placeholder="Flange Joint no."
-style="top: 59.6%; left: 13%; width: 6%;">
-
-<input type="text" id="flangeJoint1_30" class="campo pc-only"
-placeholder="T. 30%"
-style="top: 59.6%; left: 19%; width: 6%;">
-
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_1" class="campo pc-only"
-style="top: 59.6%; left: 25.2%;">
-
-<input type="text" id="flangeJoint1_70" class="campo pc-only"
-placeholder="T. 70%"
-style="top: 59.6%; left: 28%; width: 6%;">
-
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_1" class="campo pc-only"
-style="top: 59.6%; left:35%;">
-
-<input type="text" id="flangeJoint1_100" class="campo pc-only"
-placeholder="T. 100%"
-style="top: 59.6%; left: 38.5%; width: 6%;">
-
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_1" class="campo pc-only"
-style="top: 59.6%; left: 46.2%;">
-
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_1" class="campo pc-only"
-style="top: 59.6%; left: 52%;">
-
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_1" class="campo pc-only"
-style="top: 59.6%; left: 60.75%;">
-
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_1" class="campo pc-only"
-style="top: 59.6%; left: 69.5%;">
-
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_1" class="campo pc-only"
-placeholder="0"
-style="top: 59.3%; left: 78%; width: 8%;">
-
-
-<!-- Ejemplo de la fila 2 -->
-<input type="text" id="flangeJoint2" class="campo pc-only"
-placeholder="Flange Joint no.2"
-style="top: 62%; left: 13%; width: 6%;">
+    placeholder="Flange material"
+    style="top: 32.8%; left: 31.5%; width: 12.5%;">
 
-<input type="text" id="flangeJoint2_30" class="campo pc-only"
-placeholder="T. 30%"
-style="top: 62%; left: 19%; width: 6%;">
+    <select id="diametroRating" class="campo pc-only" 
+            style="top: 33.2%; left: 66.3%; width: 21.5%;">
+        <option value="">-- Esperando Datos --</option>
+    </select>
 
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_2" class="campo pc-only"
-style="top: 62%; left: 25.2%;">
+    <input type="text" id="gasketType" class="campo pc-only"
+    placeholder="Gasket type"
+    style="top: 36.5%; left: 31.5%; width: 12.5%;">
 
-<input type="text" id="flangeJoint2_70" class="campo pc-only"
-placeholder="T. 70%"
-style="top: 62%; left: 28%; width: 6%;">
+    <input type="text" id="gasketMaterial" class="campo pc-only"
+    placeholder="Material Empaquetadura"
+    style="top: 35.7%; left: 66.3%; width: 21%;">
 
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_2" class="campo pc-only"
-style="top: 62%; left:35%;">
+    <input type="text" id="gasketSize" class="campo pc-only"
+    placeholder="Empaq. Size [inch] / Rating"
+    style="top: 37.6%; left: 66.3%; width: 21%;">
 
-<input type="text" id="flangeJoint2_100" class="campo pc-only"
-placeholder="T. 100%"
-style="top: 62%; left: 38.5%; width: 6%;">
+    <input type="text" id="boltMaterial" class="campo pc-only"
+    placeholder="Bolt material"
+    style="top: 40%; left: 31.5%; width: 12.5%;">
 
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_2" class="campo pc-only"
-style="top: 62%; left: 46.2%;">
+    <input type="text" id="boltSize" class="campo pc-only"
+    placeholder="Bolt size [inch] / length [mm]"
+    style="top: 40.2%; left: 66.3%; width: 21%;">
 
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_2" class="campo pc-only"
-style="top: 62%; left: 52%;">
+    <input type="number" id="boltQty" class="campo pc-only"
+    placeholder="Bolt Quantity"
+    style="top: 43.6%; left: 31.5%; width: 12.5%;">
 
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_2" class="campo pc-only"
-style="top: 62%; left: 60.75%;">
+    <input type="text" id="lubricantName" class="campo pc-only"
+    placeholder="Nombre Lubricante"
+    value="Depac 505"
+    style="top: 44.8%; left: 66.3%; width: 21%;">
 
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_2" class="campo pc-only"
-style="top: 62%; left: 69.5%;">
+    <input type="text" id="washerDesc" class="campo pc-only"
+    placeholder=" "
+    style="top: 47%; left: 46%; width: 41.3%;">
 
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_2" class="campo pc-only"
-placeholder="0"
-style="top: 62%; left: 78%; width: 8%;">
+    <!-- JOINT ASSEMBLY PARAMETER RECORDS -->
+    <!-- Fila 1 -->
+    <input type="text" id="flangeJoint1" class="campo pc-only"
+    placeholder="Flange Joint no."
+    style="top: 59.6%; left: 13%; width: 6%;">
 
+    <input type="text" id="flangeJoint1_30" class="campo pc-only"
+    placeholder="T. 30%"
+    style="top: 59.6%; left: 19%; width: 6%;">
 
-<!-- Ejemplo de la fila 3 -->
-<input type="text" id="flangeJoint3" class="campo pc-only"
-placeholder="Flange Joint no.3"
-style="top: 64%; left: 13%; width: 6%;">
+    <input type="checkbox" id="torque30_1" class="campo pc-only"
+    style="top: 59.6%; left: 25.2%;">
 
-<input type="text" id="flangeJoint3_30" class="campo pc-only"
-placeholder="T. 30%"
-style="top: 64%; left: 19%; width: 6%;">
+    <input type="text" id="flangeJoint1_70" class="campo pc-only"
+    placeholder="T. 70%"
+    style="top: 59.6%; left: 28%; width: 6%;">
 
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_3" class="campo pc-only"
-style="top: 64%; left: 25.2%;">
+    <input type="checkbox" id="torque70_1" class="campo pc-only"
+    style="top: 59.6%; left:35%;">
 
-<input type="text" id="flangeJoint3_70" class="campo pc-only"
-placeholder="T. 70%"
-style="top: 64%; left: 28%; width: 6%;">
+    <input type="text" id="flangeJoint1_100" class="campo pc-only"
+    placeholder="T. 100%"
+    style="top: 59.6%; left: 38.5%; width: 6%;">
 
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_3" class="campo pc-only"
-style="top: 64%; left:35%;">
+    <input type="checkbox" id="torque100_1" class="campo pc-only"
+    style="top: 59.6%; left: 46.2%;">
 
-<input type="text" id="flangeJoint3_100" class="campo pc-only"
-placeholder="T. 100%"
-style="top: 64%; left: 38.5%; width: 6%;">
+    <input type="checkbox" id="gap1_1" class="campo pc-only"
+    style="top: 59.6%; left: 52%;">
 
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_3" class="campo pc-only"
-style="top: 64%; left: 46.2%;">
+    <input type="checkbox" id="gap2_1" class="campo pc-only"
+    style="top: 59.6%; left: 60.75%;">
 
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_3" class="campo pc-only"
-style="top: 64%; left: 52%;">
+    <input type="checkbox" id="gapFinal_1" class="campo pc-only"
+    style="top: 59.6%; left: 69.5%;">
 
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_3" class="campo pc-only"
-style="top: 64%; left: 60.75%;">
+    <input type="number" id="threads_1" class="campo pc-only"
+    placeholder="0"
+    style="top: 59.3%; left: 78%; width: 8%;">
 
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_3" class="campo pc-only"
-style="top: 64%; left: 69.5%;">
+    <!-- Fila 2 -->
+    <input type="text" id="flangeJoint2" class="campo pc-only"
+    placeholder="Flange Joint no.2"
+    style="top: 62%; left: 13%; width: 6%;">
 
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_3" class="campo pc-only"
-placeholder="0"
-style="top: 64%; left: 78%; width: 8%;">
+    <input type="text" id="flangeJoint2_30" class="campo pc-only"
+    placeholder="T. 30%"
+    style="top: 62%; left: 19%; width: 6%;">
 
+    <input type="checkbox" id="torque30_2" class="campo pc-only"
+    style="top: 62%; left: 25.2%;">
 
-<!-- Ejemplo de la fila 4 -->
-<input type="text" id="flangeJoint4" class="campo pc-only"
-placeholder="Flange Joint no.4"
-style="top: 66.1%; left: 13%; width: 6%;">
+    <input type="text" id="flangeJoint2_70" class="campo pc-only"
+    placeholder="T. 70%"
+    style="top: 62%; left: 28%; width: 6%;">
 
-<input type="text" id="flangeJoint4_30" class="campo pc-only"
-placeholder="4"
-style="top: 66.1%; left: 19%; width: 6%;">
+    <input type="checkbox" id="torque70_2" class="campo pc-only"
+    style="top: 62%; left:35%;">
 
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_4" class="campo pc-only"
-style="top: 66.1%; left: 25.2%;">
+    <input type="text" id="flangeJoint2_100" class="campo pc-only"
+    placeholder="T. 100%"
+    style="top: 62%; left: 38.5%; width: 6%;">
 
-<input type="text" id="flangeJoint4_70" class="campo pc-only"
-placeholder="T. 70%"
-style="top: 66.1%; left: 28%; width: 6%;">
+    <input type="checkbox" id="torque100_2" class="campo pc-only"
+    style="top: 62%; left: 46.2%;">
 
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_4" class="campo pc-only"
-style="top: 66.1%; left:35%;">
+    <input type="checkbox" id="gap1_2" class="campo pc-only"
+    style="top: 62%; left: 52%;">
 
-<input type="text" id="flangeJoint4_100" class="campo pc-only"
-placeholder="T. 100%"
-style="top: 66.1%; left: 38.5%; width: 6%;">
+    <input type="checkbox" id="gap2_2" class="campo pc-only"
+    style="top: 62%; left: 60.75%;">
 
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_4" class="campo pc-only"
-style="top: 66.1%; left: 46.2%;">
+    <input type="checkbox" id="gapFinal_2" class="campo pc-only"
+    style="top: 62%; left: 69.5%;">
 
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_4" class="campo pc-only"
-style="top: 66.1%; left: 52%;">
+    <input type="number" id="threads_2" class="campo pc-only"
+    placeholder="0"
+    style="top: 62%; left: 78%; width: 8%;">
 
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_4" class="campo pc-only"
-style="top: 66.1%; left: 60.75%;">
+    <!-- Fila 3 -->
+    <input type="text" id="flangeJoint3" class="campo pc-only"
+    placeholder="Flange Joint no.3"
+    style="top: 64%; left: 13%; width: 6%;">
 
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_4" class="campo pc-only"
-style="top: 66.1%; left: 69.5%;">
+    <input type="text" id="flangeJoint3_30" class="campo pc-only"
+    placeholder="T. 30%"
+    style="top: 64%; left: 19%; width: 6%;">
 
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_4" class="campo pc-only"
-placeholder="0"
-style="top: 66.1%; left: 78%; width: 8%;">
+    <input type="checkbox" id="torque30_3" class="campo pc-only"
+    style="top: 64%; left: 25.2%;">
 
+    <input type="text" id="flangeJoint3_70" class="campo pc-only"
+    placeholder="T. 70%"
+    style="top: 64%; left: 28%; width: 6%;">
 
-<!-- Ejemplo de la fila 5 -->
-<input type="text" id="flangeJoint5" class="campo pc-only"
-placeholder="Flange Joint no."
-style="top: 68.25%; left: 13%; width: 6%;">
+    <input type="checkbox" id="torque70_3" class="campo pc-only"
+    style="top: 64%; left:35%;">
 
-<input type="text" id="flangeJoint5_30" class="campo pc-only"
-placeholder="T. 30%"
-style="top: 68.25%; left: 19%; width: 6%;">
+    <input type="text" id="flangeJoint3_100" class="campo pc-only"
+    placeholder="T. 100%"
+    style="top: 64%; left: 38.5%; width: 6%;">
 
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_5" class="campo pc-only"
-style="top: 68.25%; left: 25.2%;">
+    <input type="checkbox" id="torque100_3" class="campo pc-only"
+    style="top: 64%; left: 46.2%;">
 
-<input type="text" id="flangeJoint5_70" class="campo pc-only"
-placeholder="T. 70%"
-style="top: 68.25%; left: 28%; width: 6%;">
+    <input type="checkbox" id="gap1_3" class="campo pc-only"
+    style="top: 64%; left: 52%;">
 
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_5" class="campo pc-only"
-style="top: 68.25%; left:35%;">
+    <input type="checkbox" id="gap2_3" class="campo pc-only"
+    style="top: 64%; left: 60.75%;">
 
-<input type="text" id="flangeJoint5_100" class="campo pc-only"
-placeholder="T. 100%"
-style="top: 68.25%; left: 38.5%; width: 6%;">
+    <input type="checkbox" id="gapFinal_3" class="campo pc-only"
+    style="top: 64%; left: 69.5%;">
 
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_5" class="campo pc-only"
-style="top: 68.25%; left: 46.2%;">
+    <input type="number" id="threads_3" class="campo pc-only"
+    placeholder="0"
+    style="top: 64%; left: 78%; width: 8%;">
 
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_5" class="campo pc-only"
-style="top: 68.25%; left: 52%;">
+    <!-- Fila 4 -->
+    <input type="text" id="flangeJoint4" class="campo pc-only"
+    placeholder="Flange Joint no.4"
+    style="top: 66.1%; left: 13%; width: 6%;">
 
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_5" class="campo pc-only"
-style="top: 68.25%; left: 60.75%;">
+    <input type="text" id="flangeJoint4_30" class="campo pc-only"
+    placeholder="4"
+    style="top: 66.1%; left: 19%; width: 6%;">
 
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_5" class="campo pc-only"
-style="top: 68.25%; left: 69.5%;">
+    <input type="checkbox" id="torque30_4" class="campo pc-only"
+    style="top: 66.1%; left: 25.2%;">
 
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_5" class="campo pc-only"
-placeholder="0"
-style="top: 68.25%; left: 78%; width: 8%;">
+    <input type="text" id="flangeJoint4_70" class="campo pc-only"
+    placeholder="T. 70%"
+    style="top: 66.1%; left: 28%; width: 6%;">
 
+    <input type="checkbox" id="torque70_4" class="campo pc-only"
+    style="top: 66.1%; left:35%;">
 
-<!-- Ejemplo de la fila 6 -->
-<input type="text" id="flangeJoint6" class="campo pc-only"
-placeholder="Flange Joint no.6"
-style="top: 70.3%; left: 13%; width: 6%;">
+    <input type="text" id="flangeJoint4_100" class="campo pc-only"
+    placeholder="T. 100%"
+    style="top: 66.1%; left: 38.5%; width: 6%;">
 
-<input type="text" id="flangeJoint6_30" class="campo pc-only"
-placeholder="T. 30%"
-style="top: 70.3%; left: 19%; width: 6%;">
+    <input type="checkbox" id="torque100_4" class="campo pc-only"
+    style="top: 66.1%; left: 46.2%;">
 
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_6" class="campo pc-only"
-style="top: 70.3%; left: 25.2%;">
+    <input type="checkbox" id="gap1_4" class="campo pc-only"
+    style="top: 66.1%; left: 52%;">
 
-<input type="text" id="flangeJoint6_70" class="campo pc-only"
-placeholder="T. 70%"
-style="top: 70.3%; left: 28%; width: 6%;">
+    <input type="checkbox" id="gap2_4" class="campo pc-only"
+    style="top: 66.1%; left: 60.75%;">
 
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_6" class="campo pc-only"
-style="top: 70.3%; left:35%;">
+    <input type="checkbox" id="gapFinal_4" class="campo pc-only"
+    style="top: 66.1%; left: 69.5%;">
 
-<input type="text" id="flangeJoint6_100" class="campo pc-only"
-placeholder="T. 100%"
-style="top: 70.3%; left: 38.5%; width: 6%;">
+    <input type="number" id="threads_4" class="campo pc-only"
+    placeholder="0"
+    style="top: 66.1%; left: 78%; width: 8%;">
 
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_6" class="campo pc-only"
-style="top: 70.3%; left: 46.2%;">
+    <!-- Fila 5 -->
+    <input type="text" id="flangeJoint5" class="campo pc-only"
+    placeholder="Flange Joint no."
+    style="top: 68.25%; left: 13%; width: 6%;">
 
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_6" class="campo pc-only"
-style="top: 70.3%; left: 52%;">
+    <input type="text" id="flangeJoint5_30" class="campo pc-only"
+    placeholder="T. 30%"
+    style="top: 68.25%; left: 19%; width: 6%;">
 
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_6" class="campo pc-only"
-style="top: 70.3%; left: 60.75%;">
+    <input type="checkbox" id="torque30_5" class="campo pc-only"
+    style="top: 68.25%; left: 25.2%;">
 
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_6" class="campo pc-only"
-style="top: 70.3%; left: 69.5%;">
+    <input type="text" id="flangeJoint5_70" class="campo pc-only"
+    placeholder="T. 70%"
+    style="top: 68.25%; left: 28%; width: 6%;">
 
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_6" class="campo pc-only"
-placeholder="0"
-style="top: 70.3%; left: 78%; width: 8%;">
+    <input type="checkbox" id="torque70_5" class="campo pc-only"
+    style="top: 68.25%; left:35%;">
 
+    <input type="text" id="flangeJoint5_100" class="campo pc-only"
+    placeholder="T. 100%"
+    style="top: 68.25%; left: 38.5%; width: 6%;">
 
-<!-- Ejemplo de la fila 7 -->
-<input type="text" id="flangeJoint7" class="campo pc-only"
-placeholder=" Flange Joint no.7"
-style="top: 72.4%; left: 13%; width: 6%;">
+    <input type="checkbox" id="torque100_5" class="campo pc-only"
+    style="top: 68.25%; left: 46.2%;">
 
-<input type="text" id="flangeJoint7_30" class="campo pc-only"
-placeholder="30%"
-style="top: 72.4%; left: 19%; width: 6%;">
+    <input type="checkbox" id="gap1_5" class="campo pc-only"
+    style="top: 68.25%; left: 52%;">
 
-<!-- Torque 30% -->
-<input type="checkbox" id="torque30_7" class="campo pc-only"
-style="top: 72.4%; left: 25.2%;">
+    <input type="checkbox" id="gap2_5" class="campo pc-only"
+    style="top: 68.25%; left: 60.75%;">
 
-<input type="text" id="flangeJoint7_70" class="campo pc-only"
-placeholder="70%"
-style="top: 72.4%; left: 28%; width: 6%;">
+    <input type="checkbox" id="gapFinal_5" class="campo pc-only"
+    style="top: 68.25%; left: 69.5%;">
 
-<!-- Torque 70% -->
-<input type="checkbox" id="torque70_7" class="campo pc-only"
-style="top: 72.4%; left:35%;">
+    <input type="number" id="threads_5" class="campo pc-only"
+    placeholder="0"
+    style="top: 68.25%; left: 78%; width: 8%;">
 
-<input type="text" id="flangeJoint7_100" class="campo pc-only"
-placeholder="100%"
-style="top: 72.4%; left: 38.5%; width: 6%;">
+    <!-- Fila 6 -->
+    <input type="text" id="flangeJoint6" class="campo pc-only"
+    placeholder="Flange Joint no.6"
+    style="top: 70.3%; left: 13%; width: 6%;">
 
-<!-- Torque 100% -->
-<input type="checkbox" id="torque100_7" class="campo pc-only"
-style="top: 72.4%; left: 46.2%;">
+    <input type="text" id="flangeJoint6_30" class="campo pc-only"
+    placeholder="T. 30%"
+    style="top: 70.3%; left: 19%; width: 6%;">
 
-<!-- Gap check 1° -->
-<input type="checkbox" id="gap1_7" class="campo pc-only"
-style="top: 72.4%; left: 52%;">
+    <input type="checkbox" id="torque30_6" class="campo pc-only"
+    style="top: 70.3%; left: 25.2%;">
 
-<!-- Gap check 2° -->
-<input type="checkbox" id="gap2_7" class="campo pc-only"
-style="top: 72.4%; left: 60.75%;">
+    <input type="text" id="flangeJoint6_70" class="campo pc-only"
+    placeholder="T. 70%"
+    style="top: 70.3%; left: 28%; width: 6%;">
 
-<!-- Gap check Final -->
-<input type="checkbox" id="gapFinal_7" class="campo pc-only"
-style="top: 72.4%; left: 69.5%;">
+    <input type="checkbox" id="torque70_6" class="campo pc-only"
+    style="top: 70.3%; left:35%;">
 
-<!-- Número de hilos después del torque -->
-<input type="number" id="threads_7" class="campo pc-only"
-placeholder="0"
-style="top: 72.4%; left: 78%; width: 8%;">
+    <input type="text" id="flangeJoint6_100" class="campo pc-only"
+    placeholder="T. 100%"
+    style="top: 70.3%; left: 38.5%; width: 6%;">
+
+    <input type="checkbox" id="torque100_6" class="campo pc-only"
+    style="top: 70.3%; left: 46.2%;">
+
+    <input type="checkbox" id="gap1_6" class="campo pc-only"
+    style="top: 70.3%; left: 52%;">
+
+    <input type="checkbox" id="gap2_6" class="campo pc-only"
+    style="top: 70.3%; left: 60.75%;">
+
+    <input type="checkbox" id="gapFinal_6" class="campo pc-only"
+    style="top: 70.3%; left: 69.5%;">
+
+    <input type="number" id="threads_6" class="campo pc-only"
+    placeholder="0"
+    style="top: 70.3%; left: 78%; width: 8%;">
+
+    <!-- Fila 7 -->
+    <input type="text" id="flangeJoint7" class="campo pc-only"
+    placeholder=" Flange Joint no.7"
+    style="top: 72.4%; left: 13%; width: 6%;">
+
+    <input type="text" id="flangeJoint7_30" class="campo pc-only"
+    placeholder="30%"
+    style="top: 72.4%; left: 19%; width: 6%;">
+
+    <input type="checkbox" id="torque30_7" class="campo pc-only"
+    style="top: 72.4%; left: 25.2%;">
+
+    <input type="text" id="flangeJoint7_70" class="campo pc-only"
+    placeholder="70%"
+    style="top: 72.4%; left: 28%; width: 6%;">
+
+    <input type="checkbox" id="torque70_7" class="campo pc-only"
+    style="top: 72.4%; left:35%;">
+
+    <input type="text" id="flangeJoint7_100" class="campo pc-only"
+    placeholder="100%"
+    style="top: 72.4%; left: 38.5%; width: 6%;">
+
+    <input type="checkbox" id="torque100_7" class="campo pc-only"
+    style="top: 72.4%; left: 46.2%;">
+
+    <input type="checkbox" id="gap1_7" class="campo pc-only"
+    style="top: 72.4%; left: 52%;">
+
+    <input type="checkbox" id="gap2_7" class="campo pc-only"
+    style="top: 72.4%; left: 60.75%;">
+
+    <input type="checkbox" id="gapFinal_7" class="campo pc-only"
+    style="top: 72.4%; left: 69.5%;">
+
+    <input type="number" id="threads_7" class="campo pc-only"
+    placeholder="0"
+    style="top: 72.4%; left: 78%; width: 8%;">
 
     <!-- Versión móvil: formulario ordenado -->
     <div class="mobile-only">
@@ -443,9 +606,359 @@ style="top: 72.4%; left: 78%; width: 8%;">
       
         <label for="serie">N° Serie</label>
         <input type="text" id="serie-m">
-      </div>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const appId = "ef283a04-64e5-4bcb-8418-cc59797f7856";
+      const appAccessKey = "V2-6Johj-GSk5e-lZlPM-9TUqL-8dXq6-0SMGT-8MWPB-oOrdo";
+      
+      // URLs para las diferentes tablas
+      const urlRegistros = `https://api.appsheet.com/api/v2/apps/${appId}/tables/5_Registros_Torque/Action`;
+      const urlProtocolos = `https://api.appsheet.com/api/v2/apps/${appId}/tables/6. Protocolos/Action`;
+
+      const body = {
+        "Action": "Find",
+        "Properties": { "Locale": "en-US" },
+        "Rows": []
+      };
+
+      let todosLosRegistros = [];
+      let todosLosProtocolos = [];
+
+      // Función para hacer peticiones a AppSheet
+      async function fetchAppSheet(url) {
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'ApplicationAccessKey': appAccessKey
+            },
+            body: JSON.stringify(body)
+          });
+          return await response.json();
+        } catch (error) {
+          console.error('Error al obtener datos:', error);
+          return [];
+        }
+      }
+
+      // Cargar datos iniciales
+      async function cargarDatosIniciales() {
+        // Cargar registros
+        todosLosRegistros = await fetchAppSheet(urlRegistros);
+        const sinProtocolo = todosLosRegistros.filter(row => !row.ID_Protocolo || row.ID_Protocolo.trim() === "");
+        const isometricosUnicos = [...new Set(sinProtocolo.map(row => row.ID_Isometrico))];
+        llenarSelectIsometricos(isometricosUnicos);
+
+        // Cargar protocolos
+        todosLosProtocolos = await fetchAppSheet(urlProtocolos);
+        llenarSelectProtocolos(todosLosProtocolos);
+      }
+
+      // Llenar select de isométricos (modo creación)
+      function llenarSelectIsometricos(lista) {
+        const select = document.getElementById("isometrico");
+        if (select) {
+          select.innerHTML = '<option value="">-- Selecciona un Isométrico --</option>';
+          
+          lista.forEach(valor => {
+            const option = document.createElement("option");
+            option.value = valor;
+            option.textContent = valor;
+            select.appendChild(option);
+          });
+        }
+      }
+
+      // Llenar select de protocolos (modo visualización)
+      function llenarSelectProtocolos(protocolos) {
+        const selectProtocolo = document.getElementById("protocoloSelect");
+        if (selectProtocolo) {
+          selectProtocolo.innerHTML = '<option value="">-- Selecciona un Protocolo Existente --</option>';
+          
+          protocolos.forEach(protocolo => {
+            const option = document.createElement("option");
+            option.value = protocolo.ID_Protocolo;
+            option.textContent = `${protocolo.ID_Protocolo} - ${protocolo.ID_Isometrico || 'Sin isométrico'} (${protocolo.Estado_Protocolo || 'Sin estado'})`;
+            selectProtocolo.appendChild(option);
+          });
+
+          // Event listener para cargar datos del protocolo seleccionado
+          selectProtocolo.addEventListener("change", cargarDatosProtocolo);
+        }
+      }
+
+      // Cargar datos del protocolo seleccionado
+      async function cargarDatosProtocolo() {
+        const selectProtocolo = document.getElementById("protocoloSelect");
+        const protocoloId = selectProtocolo.value;
+        
+        if (!protocoloId) {
+          limpiarFormulario();
+          return;
+        }
+
+        // Encontrar el protocolo
+        const protocolo = todosLosProtocolos.find(p => p.ID_Protocolo === protocoloId);
+        if (!protocolo) return;
+
+        // Llenar campos del protocolo
+        llenarCamposProtocolo(protocolo);
+
+        // Cargar registros asociados
+        const registrosProtocolo = todosLosRegistros.filter(r => r.ID_Protocolo === protocoloId);
+        llenarCamposRegistros(registrosProtocolo);
+      }
+
+      // Llenar campos del protocolo
+      function llenarCamposProtocolo(protocolo) {
+        const campos = {
+          'subsistema': protocolo.Sub_Sistema,
+          'hoja': protocolo.Hoja_Referencia,
+          'area': protocolo.Area_Linea,
+          'torque': protocolo.Torque_100_Objetivo,
+          'herramienta': protocolo.Nombre_Herramienta,
+          'serie': protocolo.Serie_Herramienta,
+          'flangeMaterial': protocolo.Flange_Material,
+          'gasketType': protocolo.Gasket_Type,
+          'gasketMaterial': protocolo.Gasket_Material,
+          'boltMaterial': protocolo.Bolt_Material,
+          'boltSize': protocolo.Bolt_Size,
+          'boltQty': protocolo.Bolt_Qty_Total,
+          'lubricantName': protocolo.Lubricant_Name,
+          'washerDesc': protocolo.Washer_Desc
+        };
+
+        // Llenar campos de texto
+        Object.keys(campos).forEach(campoId => {
+          const campo = document.getElementById(campoId);
+          if (campo && campos[campoId]) {
+            campo.value = campos[campoId];
+          }
+        });
+
+        // Llenar selects especiales
+        if (protocolo.ID_Isometrico) {
+          const isometricoSelect = document.getElementById("isometrico");
+          if (isometricoSelect) {
+            // Agregar opción si no existe
+            const existeOpcion = Array.from(isometricoSelect.options).some(option => option.value === protocolo.ID_Isometrico);
+            if (!existeOpcion) {
+              const option = document.createElement("option");
+              option.value = protocolo.ID_Isometrico;
+              option.textContent = protocolo.ID_Isometrico;
+              isometricoSelect.appendChild(option);
+            }
+            isometricoSelect.value = protocolo.ID_Isometrico;
+          }
+        }
+
+        if (protocolo.DiametroRating_Protocolo) {
+          const diametroSelect = document.getElementById("diametroRating");
+          if (diametroSelect) {
+            diametroSelect.innerHTML = `<option value="${protocolo.DiametroRating_Protocolo}">${protocolo.DiametroRating_Protocolo}</option>`;
+          }
+        }
+      }
+
+      // Llenar campos de registros (uniones)
+      function llenarCamposRegistros(registros) {
+        // Limpiar todos los campos de uniones
+        for (let i = 1; i <= 7; i++) {
+          limpiarFilaUnion(i);
+        }
+
+        // Llenar con los datos de registros
+        registros.forEach((registro, index) => {
+          if (index < 7) { // Solo primeras 7 uniones
+            const fila = index + 1;
+            llenarFilaUnion(fila, registro);
+          }
+        });
+      }
+
+      // Llenar una fila específica de unión
+      function llenarFilaUnion(fila, registro) {
+        const campos = {
+          [`flangeJoint${fila}`]: registro.Flange_Joint_No || `Union ${fila}`,
+          [`flangeJoint${fila}_30`]: registro.Torque_30_Percent,
+          [`flangeJoint${fila}_70`]: registro.Torque_70_Percent,
+          [`flangeJoint${fila}_100`]: registro.Torque_100_Percent,
+          [`threads_${fila}`]: registro.Threads_After_Torque
+        };
+
+        // Llenar campos de texto
+        Object.keys(campos).forEach(campoId => {
+          const campo = document.getElementById(campoId);
+          if (campo && campos[campoId] !== undefined && campos[campoId] !== null) {
+            campo.value = campos[campoId];
+          }
+        });
+
+        // Llenar checkboxes
+        const checkboxes = {
+          [`torque30_${fila}`]: registro.Torque_30_Done,
+          [`torque70_${fila}`]: registro.Torque_70_Done,
+          [`torque100_${fila}`]: registro.Torque_100_Done,
+          [`gap1_${fila}`]: registro.Gap_Check_1,
+          [`gap2_${fila}`]: registro.Gap_Check_2,
+          [`gapFinal_${fila}`]: registro.Gap_Check_Final
+        };
+
+        Object.keys(checkboxes).forEach(checkId => {
+          const check = document.getElementById(checkId);
+          if (check) {
+            // En AppSheet, los checkboxes pueden venir como "TRUE"/"FALSE" o booleanos
+            const valor = checkboxes[checkId];
+            check.checked = valor === true || valor === "TRUE" || valor === "true" || valor === 1;
+          }
+        });
+      }
+
+      // Limpiar una fila específica
+      function limpiarFilaUnion(fila) {
+        const elementos = [
+          `flangeJoint${fila}`, `flangeJoint${fila}_30`, `flangeJoint${fila}_70`, 
+          `flangeJoint${fila}_100`, `threads_${fila}`, `torque30_${fila}`, 
+          `torque70_${fila}`, `torque100_${fila}`, `gap1_${fila}`, 
+          `gap2_${fila}`, `gapFinal_${fila}`
+        ];
+
+        elementos.forEach(id => {
+          const elemento = document.getElementById(id);
+          if (elemento) {
+            if (elemento.type === 'checkbox') {
+              elemento.checked = false;
+            } else {
+              elemento.value = '';
+            }
+          }
+        });
+      }
+
+      // Limpiar todo el formulario
+      function limpiarFormulario() {
+        // Limpiar campos principales
+        const camposPrincipales = [
+          'subsistema', 'hoja', 'area', 'torque', 'herramienta', 'serie',
+          'flangeMaterial', 'gasketType', 'gasketMaterial', 'boltMaterial',
+          'boltSize', 'boltQty', 'lubricantName', 'washerDesc'
+        ];
+
+        camposPrincipales.forEach(id => {
+          const campo = document.getElementById(id);
+          if (campo) campo.value = '';
+        });
+
+        // Limpiar selects
+        const protocoloSelect = document.getElementById("protocoloSelect");
+        const isometricoSelect = document.getElementById("isometrico");
+        const diametroSelect = document.getElementById("diametroRating");
+        
+        if (protocoloSelect) protocoloSelect.selectedIndex = 0;
+        if (isometricoSelect) isometricoSelect.selectedIndex = 0;
+        if (diametroSelect) diametroSelect.innerHTML = '<option value="">-- Esperando Datos --</option>';
+
+        // Limpiar todas las filas de uniones
+        for (let i = 1; i <= 7; i++) {
+          limpiarFilaUnion(i);
+        }
+      }
+
+      // Función de impresión
+      function imprimirFormulario() {
+        window.print();
+      }
+
+      // Configurar modo de edición
+      function configurarModo() {
+        const modoSelect = document.getElementById("modoSelect");
+        const modo = modoSelect.value;
+        const campos = document.querySelectorAll('.campo');
+        
+        campos.forEach(campo => {
+          if (modo === 'ver') {
+            campo.setAttribute('readonly', true);
+            if (campo.type === 'checkbox') {
+              campo.disabled = true;
+            }
+          } else {
+            campo.removeAttribute('readonly');
+            if (campo.type === 'checkbox') {
+              campo.disabled = false;
+            }
+          }
+        });
+      }
+
+      // Event listener para el modo
+      const modoSelect = document.getElementById("modoSelect");
+      if (modoSelect) {
+        modoSelect.addEventListener("change", configurarModo);
+        configurarModo(); // Configurar modo inicial
+      }
+
+      // Configurar eventos de torque y gap (código original)
+      const rango = [1, 2, 3, 4, 5, 6, 7];
+      rango.forEach(num => {
+        // Campos de torque
+        const campo30 = document.getElementById(`flangeJoint${num}_30`);
+        const campo70 = document.getElementById(`flangeJoint${num}_70`);
+        const campo100 = document.getElementById(`flangeJoint${num}_100`);
+
+        // Checkboxes de torque
+        const check30 = document.getElementById(`torque30_${num}`);
+        const check70 = document.getElementById(`torque70_${num}`);
+        const check100 = document.getElementById(`torque100_${num}`);
+
+        // Campo principal
+        const campoPrincipal = document.getElementById(`flangeJoint${num}`);
+
+        // Checkboxes de gap
+        const gap1 = document.getElementById(`gap1_${num}`);
+        const gap2 = document.getElementById(`gap2_${num}`);
+        const gapFinal = document.getElementById(`gapFinal_${num}`);
+
+        // Activación por torque
+        if (campo30 && check30) {
+          campo30.addEventListener("input", () => {
+            check30.checked = campo30.value.trim() !== "";
+          });
+        }
+
+        if (campo70 && check70) {
+          campo70.addEventListener("input", () => {
+            check70.checked = campo70.value.trim() !== "";
+          });
+        }
+
+        if (campo100 && check100) {
+          campo100.addEventListener("input", () => {
+            check100.checked = campo100.value.trim() !== "";
+          });
+        }
+
+        // Activación de gap checks desde campo principal
+        if (campoPrincipal) {
+          campoPrincipal.addEventListener("input", () => {
+            const tieneValor = campoPrincipal.value.trim() !== "";
+            [gap1, gap2, gapFinal].forEach(gap => {
+              if (gap) gap.checked = tieneValor;
+            });
+          });
+        }
+      });
+
+      // Exponer funciones globalmente para uso en HTML
+      window.imprimirFormulario = imprimirFormulario;
+      window.limpiarFormulario = limpiarFormulario;
+
+      // Inicializar aplicación
+      cargarDatosIniciales();
+    });
+  </script>
 </body>
 </html>
