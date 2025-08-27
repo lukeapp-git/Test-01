@@ -122,19 +122,57 @@
       background-color: #1e7e34;
     }
 
-    /* Estilos de impresión */
+    /* Estilos de impresión optimizados para carta 300 DPI */
     @media print {
       .panel-control {
-        display: none;
+        display: none !important;
       }
       
       body {
-        background: white;
-        padding: 0;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       
       .formulario {
-        max-width: 100%;
+        max-width: 100% !important;
+        width: 8.5in !important; /* Ancho carta */
+        height: 11in !important; /* Alto carta */
+        margin: 0 !important;
+        padding: 0 !important;
+        page-break-inside: avoid !important;
+        position: relative !important;
+      }
+
+      .fondo {
+        width: 8.5in !important;
+        height: 11in !important;
+        max-width: none !important;
+        object-fit: contain !important;
+        display: block !important;
+      }
+
+      .campo {
+        font-size: 10px !important;
+        background-color: transparent !important;
+        border: none !important;
+        color: black !important;
+        -webkit-appearance: none !important;
+      }
+
+      /* Asegurar que los checkboxes se impriman */
+      input[type="checkbox"] {
+        -webkit-appearance: checkbox !important;
+        appearance: checkbox !important;
+        width: 12px !important;
+        height: 12px !important;
+      }
+
+      @page {
+        size: letter !important; /* 8.5in x 11in */
+        margin: 0 !important;
       }
     }
 
@@ -230,6 +268,9 @@
       </button>
       <button class="btn btn-success" onclick="imprimirFormulario()">
         🖨️ Imprimir
+      </button>
+      <button class="btn btn-primary" onclick="generarPDF()">
+        📄 Generar PDF
       </button>
     </div>
   </div>
@@ -607,6 +648,10 @@
     </div>
   </div>
 
+  <!-- Scripts para generar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const appId = "ef283a04-64e5-4bcb-8418-cc59797f7856";
@@ -930,9 +975,68 @@
         }
       }
 
-      // Función de impresión
+      // Función de impresión optimizada
       function imprimirFormulario() {
+        // Configurar para impresión óptima
+        const formulario = document.querySelector('.formulario');
+        if (formulario) {
+          formulario.style.pageBreakInside = 'avoid';
+        }
+        
         window.print();
+      }
+
+      // Función para generar PDF
+      async function generarPDF() {
+        try {
+          // Crear un canvas para capturar el formulario
+          const formulario = document.querySelector('.formulario');
+          if (!formulario) {
+            alert('No se encontró el formulario para generar PDF');
+            return;
+          }
+
+          // Usar html2canvas para capturar el contenido
+          const canvas = await html2canvas(formulario, {
+            scale: 2, // Alta resolución
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: '#ffffff',
+            width: 816, // 8.5 pulgadas * 96 DPI
+            height: 1056, // 11 pulgadas * 96 DPI
+            scrollX: 0,
+            scrollY: 0
+          });
+
+          // Crear PDF usando jsPDF
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'in',
+            format: 'letter'
+          });
+
+          // Convertir canvas a imagen
+          const imgData = canvas.toDataURL('image/png');
+          
+          // Agregar imagen al PDF
+          pdf.addImage(imgData, 'PNG', 0, 0, 8.5, 11);
+          
+          // Generar nombre del archivo
+          const protocoloSelect = document.getElementById("protocoloSelect");
+          const protocoloId = protocoloSelect.value || 'QCF-1316';
+          const fecha = new Date().toISOString().slice(0, 10);
+          const nombreArchivo = `${protocoloId}_${fecha}.pdf`;
+          
+          // Descargar PDF
+          pdf.save(nombreArchivo);
+          
+        } catch (error) {
+          console.error('Error generando PDF:', error);
+          // Fallback: usar impresión del navegador
+          alert('Error generando PDF. Usando impresión estándar...');
+          imprimirFormulario();
+        }
       }
 
       // Configurar modo de edición
@@ -1022,15 +1126,22 @@
         if (campoPrincipal) {
           campoPrincipal.addEventListener("input", () => {
             const tieneValor = campoPrincipal.value.trim() !== "";
-            [gap1, gap2, gapFinal].forEach(gap => {
-              if (gap) gap.checked = tieneValor;
-            });
+            if (tieneValor) {
+              // Auto-marcar todos los checkboxes de la fila
+              marcarCheckboxesFila(num);
+            } else {
+              // Desmarcar checkboxes si se borra el contenido
+              [gap1, gap2, gapFinal].forEach(gap => {
+                if (gap) gap.checked = false;
+              });
+            }
           });
         }
       });
 
       // Exponer funciones globalmente para uso en HTML
       window.imprimirFormulario = imprimirFormulario;
+      window.generarPDF = generarPDF;
       window.limpiarFormulario = limpiarFormulario;
 
       // Inicializar aplicación
