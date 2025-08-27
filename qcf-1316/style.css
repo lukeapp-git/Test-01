@@ -1,86 +1,239 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f8f9fa;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-}
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
 
 
 
+    .formulario {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+    }
 
-/* Oculta los placeholders en todos los inputs de texto y número */
-input::placeholder {
-  color: transparent;
-}
+    .fondo {
+      width: 100%;
+      display: block;
+    }
 
-/* Si quieres limitarlo solo a los campos de clase 'campo' */
-input.campo::placeholder {
-  color: transparent;
-}
+    .campo {
+      position: absolute;
+      font-size: 12px;
+      padding: 2px;
+      border: 0px;
+      border-radius: 4px;
+      background-color: transparent;
+    }
 
+    .mobile-only {
+      display: none;
+    }
 
+    /* Panel de Control */
+    .panel-control {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
 
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
 
+    .control-group label {
+      font-weight: bold;
+      color: #333;
+      font-size: 12px;
+    }
 
+    .control-group select {
+      min-width: 250px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
 
-.formulario {
-  position: relative;
-  width: 100%;
-  max-width: 800px; /* tamaño máximo carta */
-  margin: auto;
-}
+    .botones {
+      display: flex;
+      gap: 10px;
+      margin-left: auto;
+    }
 
-.fondo {
-  width: 100%;
-  display: block;
-}
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
 
-.campo {
-  position: absolute;
-  font-size: 12px;
-  padding: 2px;
-  border: 0px;
-  border-radius: 4px;
-  background-color: transparent;
-}
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
 
-.mobile-only {
-  display: none;
-}
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
 
-/* ----- MODO MÓVIL ----- */
-@media (max-width: 768px) {
-  .fondo,
-  .pc-only {
-    display: none;
-  }
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
 
-  .mobile-only {
-    display: block;
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
 
-  .mobile-only label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-  }
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
 
-  .mobile-only input,
-  .mobile-only textarea {
-    width: 100%;
-    margin-top: 5px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-}
+    .btn-success:hover {
+      background-color: #1e7e34;
+    }
 
-input {
-  text-align: center;
-}
+    /* Estilos de impresión optimizados para carta 300 DPI */
+    @media print {
+      .panel-control {
+        display: none !important;
+      }
+      
+      body {
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      
+      .formulario {
+        max-width: 100% !important;
+        width: 8.5in !important; /* Ancho carta */
+        height: 11in !important; /* Alto carta */
+        margin: 0 !important;
+        padding: 0 !important;
+        page-break-inside: avoid !important;
+        position: relative !important;
+      }
+
+      .fondo {
+        width: 8.5in !important;
+        height: 11in !important;
+        max-width: none !important;
+        object-fit: contain !important;
+        display: block !important;
+      }
+
+      .campo {
+        font-size: 10px !important;
+        background-color: transparent !important;
+        border: none !important;
+        color: black !important;
+        -webkit-appearance: none !important;
+      }
+
+      /* Asegurar que los checkboxes se impriman */
+      input[type="checkbox"] {
+        -webkit-appearance: checkbox !important;
+        appearance: checkbox !important;
+        width: 12px !important;
+        height: 12px !important;
+      }
+
+      @page {
+        size: letter !important; /* 8.5in x 11in */
+        margin: 0 !important;
+      }
+    }
+
+    /* Modo móvil */
+    @media (max-width: 768px) {
+      .fondo,
+      .pc-only {
+        display: none;
+      }
+
+      .mobile-only {
+        display: block;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      .mobile-only label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      .mobile-only input,
+      .mobile-only textarea {
+        width: 100%;
+        margin-top: 5px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      .panel-control {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-group select {
+        min-width: 100%;
+      }
+
+      .botones {
+        margin-left: 0;
+        justify-content: center;
+      }
+    }
+
+    input {
+      text-align: center;
+    }
+
+    /* Status indicator */
+    .status {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .status.en-proceso {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .status.completado {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    input::placeholder {
+      color: transparent;
+    }
+
+    input.campo::placeholder {
+      color: transparent;
+    }
