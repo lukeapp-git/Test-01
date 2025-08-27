@@ -7,391 +7,175 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Panel de Control -->
-  <div class="panel-control">
-    <div class="control-group">
-      <label for="protocoloSelect">Ver Protocolo Existente:</label>
-      <select id="protocoloSelect">
-        <option value="">Cargando protocolos...</option>
-      </select>
-    </div>
+
+  <div class="page-container">
     
-    <div class="control-group">
-      <label for="modoSelect">Modo:</label>
-      <select id="modoSelect">
-        <option value="ver">👁️ Solo Ver</option>
-        <option value="editar">✏️ Editar</option>
-      </select>
-    </div>
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Panel de Control</h2>
+      </div>
+      <div class="grid-container">
+        <div class="grid-item">
+          <h4>Dato Adicional 1</h4>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="grid-item">
+          <h4>Dato Adicional 2</h4>
+          <p>Sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
+        </div>
+        
+        <div class="grid-item">
+          <label for="protocoloSelect">Ver Protocolo Existente:</label>
+          <select id="protocoloSelect">
+            <option value="">Cargando protocolos...</option>
+          </select>
+        </div>
+        <div class="grid-item">
+          <label for="modoSelect">Modo:</label>
+          <select id="modoSelect">
+            <option value="ver">👁️ Solo Ver</option>
+            <option value="editar">✏️ Editar</option>
+          </select>
+        </div>
+        
+        <div class="grid-item grid-span-2">
+            <div class="botones">
+                <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Nuevo</button>
+                <button class="btn btn-success" onclick="imprimirFormulario()">🖨️ Imprimir</button>
+                <button class="btn btn-primary" onclick="generarPDF()">📄 Generar PDF</button>
+            </div>
+        </div>
+        
+        <div class="grid-item">
+          <h4>Dato Adicional 3</h4>
+          <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+        </div>
+        <div class="grid-item">
+          <h4>Dato Adicional 4</h4>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit.</p>
+        </div>
+        
+        <div class="grid-item">
+            <h4>Estado</h4>
+            <p>Listo para edición.</p>
+        </div>
+        <div class="grid-item">
+            <h4>Última Modificación</h4>
+            <p>2025-08-27</p>
+        </div>
+      </div>
+    </aside>
 
-    <div class="botones">
-      <button class="btn btn-secondary" onclick="limpiarFormulario()">
-        🔄 Nuevo
-      </button>
-      <button class="btn btn-success" onclick="imprimirFormulario()">
-        🖨️ Imprimir
-      </button>
-      <button class="btn btn-primary" onclick="generarPDF()">
-        📄 Generar PDF
-      </button>
-    </div>
+    <main class="main-content">
+      <div class="formulario">
+        <img src="assets/formulario.png" class="fondo pc-only" alt="Formulario QCF-1316">
+
+        <input type="text" id="subsistema" class="campo pc-only" placeholder="" style="top: 23.2%; left: 29%; width: 15%;">
+        <input type="text" id="isometrico" class="campo pc-only" placeholder="" style="top: 23.2%; left: 52.9%; width: 15%;">
+        <input type="text" id="hoja" class="campo pc-only" placeholder="" style="top: 23.2%; left: 77.3%; width: 10%;">
+        <input type="text" id="area" class="campo pc-only" placeholder="" style="top: 25.5%; left: 29%; width: 15%;">
+        <input type="number" id="torque" class="campo pc-only" placeholder="" style="top: 25.5%; left: 67.9%; width: 20%;">
+        <input type="text" id="herramienta" class="campo pc-only" placeholder="" style="top: 28.7%; left: 29%; width: 15%;">
+        <input type="text" id="serie" class="campo pc-only" placeholder="" style="top: 28.7%; left: 66.3%; width: 21%;">
+        <input type="text" id="flangeMaterial" class="campo pc-only" placeholder="" style="top: 32.8%; left: 31.5%; width: 12.5%;">
+        <input type="text" id="diametroRating" class="campo pc-only" placeholder="" style="top: 33.2%; left: 66.3%; width: 21.5%;">
+        <input type="text" id="gasketType" class="campo pc-only" placeholder="" style="top: 36.5%; left: 31.5%; width: 12.5%;">
+        <input type="text" id="gasketMaterial" class="campo pc-only" placeholder="" style="top: 35.7%; left: 66.3%; width: 21%;">
+        <input type="text" id="gasketSize" class="campo pc-only" placeholder="" style="top: 37.6%; left: 66.3%; width: 21%;">
+        <input type="text" id="boltMaterial" class="campo pc-only" placeholder="" style="top: 40%; left: 31.5%; width: 12.5%;">
+        <input type="text" id="boltSize" class="campo pc-only" placeholder="" style="top: 40.2%; left: 66.3%; width: 21%;">
+        <input type="number" id="boltQty" class="campo pc-only" placeholder="" style="top: 43.6%; left: 31.5%; width: 12.5%;">
+        <input type="text" id="lubricantName" class="campo pc-only" placeholder="" value="Depac 505" style="top: 44.8%; left: 66.3%; width: 21%;">
+        <input type="text" id="washerDesc" class="campo pc-only" placeholder="" style="top: 47%; left: 46%; width: 41.3%;">
+        
+        <input type="text" id="flangeJoint1" class="campo pc-only" placeholder="" style="top: 59.6%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint1_30" class="campo pc-only" placeholder="" style="top: 59.6%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_1" class="campo pc-only" style="top: 59.6%; left: 25.2%;">
+        <input type="text" id="flangeJoint1_70" class="campo pc-only" placeholder="" style="top: 59.6%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_1" class="campo pc-only" style="top: 59.6%; left:35%;">
+        <input type="text" id="flangeJoint1_100" class="campo pc-only" placeholder="" style="top: 59.6%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_1" class="campo pc-only" style="top: 59.6%; left: 46.2%;">
+        <input type="checkbox" id="gap1_1" class="campo pc-only" style="top: 59.6%; left: 52%;">
+        <input type="checkbox" id="gap2_1" class="campo pc-only" style="top: 59.6%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_1" class="campo pc-only" style="top: 59.6%; left: 69.5%;">
+        <input type="number" id="threads_1" class="campo pc-only" placeholder="" style="top: 59.3%; left: 78%; width: 8%;">
+        
+        <input type="text" id="flangeJoint2" class="campo pc-only" placeholder="" style="top: 62%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint2_30" class="campo pc-only" placeholder="" style="top: 62%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_2" class="campo pc-only" style="top: 62%; left: 25.2%;">
+        <input type="text" id="flangeJoint2_70" class="campo pc-only" placeholder="" style="top: 62%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_2" class="campo pc-only" style="top: 62%; left:35%;">
+        <input type="text" id="flangeJoint2_100" class="campo pc-only" placeholder="" style="top: 62%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_2" class="campo pc-only" style="top: 62%; left: 46.2%;">
+        <input type="checkbox" id="gap1_2" class="campo pc-only" style="top: 62%; left: 52%;">
+        <input type="checkbox" id="gap2_2" class="campo pc-only" style="top: 62%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_2" class="campo pc-only" style="top: 62%; left: 69.5%;">
+        <input type="number" id="threads_2" class="campo pc-only" placeholder="" style="top: 62%; left: 78%; width: 8%;">
+
+        <input type="text" id="flangeJoint3" class="campo pc-only" placeholder="" style="top: 64%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint3_30" class="campo pc-only" placeholder="" style="top: 64%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_3" class="campo pc-only" style="top: 64%; left: 25.2%;">
+        <input type="text" id="flangeJoint3_70" class="campo pc-only" placeholder="" style="top: 64%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_3" class="campo pc-only" style="top: 64%; left:35%;">
+        <input type="text" id="flangeJoint3_100" class="campo pc-only" placeholder="" style="top: 64%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_3" class="campo pc-only" style="top: 64%; left: 46.2%;">
+        <input type="checkbox" id="gap1_3" class="campo pc-only" style="top: 64%; left: 52%;">
+        <input type="checkbox" id="gap2_3" class="campo pc-only" style="top: 64%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_3" class="campo pc-only" style="top: 64%; left: 69.5%;">
+        <input type="number" id="threads_3" class="campo pc-only" placeholder="" style="top: 64%; left: 78%; width: 8%;">
+
+        <input type="text" id="flangeJoint4" class="campo pc-only" placeholder="" style="top: 66.1%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint4_30" class="campo pc-only" placeholder="" style="top: 66.1%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_4" class="campo pc-only" style="top: 66.1%; left: 25.2%;">
+        <input type="text" id="flangeJoint4_70" class="campo pc-only" placeholder="" style="top: 66.1%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_4" class="campo pc-only" style="top: 66.1%; left:35%;">
+        <input type="text" id="flangeJoint4_100" class="campo pc-only" placeholder="" style="top: 66.1%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_4" class="campo pc-only" style="top: 66.1%; left: 46.2%;">
+        <input type="checkbox" id="gap1_4" class="campo pc-only" style="top: 66.1%; left: 52%;">
+        <input type="checkbox" id="gap2_4" class="campo pc-only" style="top: 66.1%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_4" class="campo pc-only" style="top: 66.1%; left: 69.5%;">
+        <input type="number" id="threads_4" class="campo pc-only" placeholder="" style="top: 66.1%; left: 78%; width: 8%;">
+
+        <input type="text" id="flangeJoint5" class="campo pc-only" placeholder="" style="top: 68.25%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint5_30" class="campo pc-only" placeholder="" style="top: 68.25%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_5" class="campo pc-only" style="top: 68.25%; left: 25.2%;">
+        <input type="text" id="flangeJoint5_70" class="campo pc-only" placeholder="" style="top: 68.25%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_5" class="campo pc-only" style="top: 68.25%; left:35%;">
+        <input type="text" id="flangeJoint5_100" class="campo pc-only" placeholder="" style="top: 68.25%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_5" class="campo pc-only" style="top: 68.25%; left: 46.2%;">
+        <input type="checkbox" id="gap1_5" class="campo pc-only" style="top: 68.25%; left: 52%;">
+        <input type="checkbox" id="gap2_5" class="campo pc-only" style="top: 68.25%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_5" class="campo pc-only" style="top: 68.25%; left: 69.5%;">
+        <input type="number" id="threads_5" class="campo pc-only" placeholder="" style="top: 68.25%; left: 78%; width: 8%;">
+
+        <input type="text" id="flangeJoint6" class="campo pc-only" placeholder="" style="top: 70.3%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint6_30" class="campo pc-only" placeholder="" style="top: 70.3%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_6" class="campo pc-only" style="top: 70.3%; left: 25.2%;">
+        <input type="text" id="flangeJoint6_70" class="campo pc-only" placeholder="" style="top: 70.3%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_6" class="campo pc-only" style="top: 70.3%; left:35%;">
+        <input type="text" id="flangeJoint6_100" class="campo pc-only" placeholder="" style="top: 70.3%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_6" class="campo pc-only" style="top: 70.3%; left: 46.2%;">
+        <input type="checkbox" id="gap1_6" class="campo pc-only" style="top: 70.3%; left: 52%;">
+        <input type="checkbox" id="gap2_6" class="campo pc-only" style="top: 70.3%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_6" class="campo pc-only" style="top: 70.3%; left: 69.5%;">
+        <input type="number" id="threads_6" class="campo pc-only" placeholder="" style="top: 70.3%; left: 78%; width: 8%;">
+
+        <input type="text" id="flangeJoint7" class="campo pc-only" placeholder="" style="top: 72.4%; left: 13%; width: 6%;">
+        <input type="text" id="flangeJoint7_30" class="campo pc-only" placeholder="" style="top: 72.4%; left: 19%; width: 6%;">
+        <input type="checkbox" id="torque30_7" class="campo pc-only" style="top: 72.4%; left: 25.2%;">
+        <input type="text" id="flangeJoint7_70" class="campo pc-only" placeholder="" style="top: 72.4%; left: 28%; width: 6%;">
+        <input type="checkbox" id="torque70_7" class="campo pc-only" style="top: 72.4%; left:35%;">
+        <input type="text" id="flangeJoint7_100" class="campo pc-only" placeholder="" style="top: 72.4%; left: 38.5%; width: 6%;">
+        <input type="checkbox" id="torque100_7" class="campo pc-only" style="top: 72.4%; left: 46.2%;">
+        <input type="checkbox" id="gap1_7" class="campo pc-only" style="top: 72.4%; left: 52%;">
+        <input type="checkbox" id="gap2_7" class="campo pc-only" style="top: 72.4%; left: 60.75%;">
+        <input type="checkbox" id="gapFinal_7" class="campo pc-only" style="top: 72.4%; left: 69.5%;">
+        <input type="number" id="threads_7" class="campo pc-only" placeholder="" style="top: 72.4%; left: 78%; width: 8%;">
+
+      </div>
+    </main>
   </div>
 
-  <div class="formulario">
-    <!-- Imagen del formulario (solo visible en PC) -->
-    <img src="assets/formulario.png" class="fondo pc-only" alt="Formulario QCF-1316">
-
-    <!-- Inputs posicionados en PC sobre el PNG -->
-    <input type="text" id="subsistema" class="campo pc-only"
-    placeholder="Subsistema"
-    style="top: 23.2%; left: 29%; width: 15%;">
-
-    <input type="text" id="isometrico" class="campo pc-only"
-    placeholder="Isométrico"
-    style="top: 23.2%; left: 52.9%; width: 15%;">
-
-    <input type="text" id="hoja" class="campo pc-only"
-    placeholder="Hoja"
-    style="top: 23.2%; left: 77.3%; width: 10%;">
-
-    <input type="text" id="area" class="campo pc-only"
-    placeholder="Area"
-    style="top: 25.5%; left: 29%; width: 15%;">
-
-    <input type="number" id="torque" class="campo pc-only"
-    placeholder="Torque Objetivo [Nm]"
-    style="top: 25.5%; left: 67.9%; width: 20%;">
-
-    <input type="text" id="herramienta" class="campo pc-only"
-    placeholder="Tipo de Llave"
-    style="top: 28.7%; left: 29%; width: 15%;">
-
-    <input type="text" id="serie" class="campo pc-only"
-    placeholder="Torque Serial No."
-    style="top: 28.7%; left: 66.3%; width: 21%;">
-
-    <input type="text" id="flangeMaterial" class="campo pc-only"
-    placeholder="Flange material"
-    style="top: 32.8%; left: 31.5%; width: 12.5%;">
-
-    <input type="text" id="diametroRating" class="campo pc-only" 
-           placeholder="Diámetro Rating"
-           style="top: 33.2%; left: 66.3%; width: 21.5%;">
-
-    <input type="text" id="gasketType" class="campo pc-only"
-    placeholder="Gasket type"
-    style="top: 36.5%; left: 31.5%; width: 12.5%;">
-
-    <input type="text" id="gasketMaterial" class="campo pc-only"
-    placeholder="Material Empaquetadura"
-    style="top: 35.7%; left: 66.3%; width: 21%;">
-
-    <input type="text" id="gasketSize" class="campo pc-only"
-    placeholder="Empaq. Size [inch] / Rating"
-    style="top: 37.6%; left: 66.3%; width: 21%;">
-
-    <input type="text" id="boltMaterial" class="campo pc-only"
-    placeholder="Bolt material"
-    style="top: 40%; left: 31.5%; width: 12.5%;">
-
-    <input type="text" id="boltSize" class="campo pc-only"
-    placeholder="Bolt size [inch] / length [mm]"
-    style="top: 40.2%; left: 66.3%; width: 21%;">
-
-    <input type="number" id="boltQty" class="campo pc-only"
-    placeholder="Bolt Quantity"
-    style="top: 43.6%; left: 31.5%; width: 12.5%;">
-
-    <input type="text" id="lubricantName" class="campo pc-only"
-    placeholder="Nombre Lubricante"
-    value="Depac 505"
-    style="top: 44.8%; left: 66.3%; width: 21%;">
-
-    <input type="text" id="washerDesc" class="campo pc-only"
-    placeholder=" "
-    style="top: 47%; left: 46%; width: 41.3%;">
-
-    <!-- JOINT ASSEMBLY PARAMETER RECORDS -->
-    <!-- Fila 1 -->
-    <input type="text" id="flangeJoint1" class="campo pc-only"
-    placeholder="Flange Joint no."
-    style="top: 59.6%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint1_30" class="campo pc-only"
-    placeholder="T. 30%"
-    style="top: 59.6%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_1" class="campo pc-only"
-    style="top: 59.6%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint1_70" class="campo pc-only"
-    placeholder="T. 70%"
-    style="top: 59.6%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_1" class="campo pc-only"
-    style="top: 59.6%; left:35%;">
-
-    <input type="text" id="flangeJoint1_100" class="campo pc-only"
-    placeholder="T. 100%"
-    style="top: 59.6%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_1" class="campo pc-only"
-    style="top: 59.6%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_1" class="campo pc-only"
-    style="top: 59.6%; left: 52%;">
-
-    <input type="checkbox" id="gap2_1" class="campo pc-only"
-    style="top: 59.6%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_1" class="campo pc-only"
-    style="top: 59.6%; left: 69.5%;">
-
-    <input type="number" id="threads_1" class="campo pc-only"
-    placeholder="0"
-    style="top: 59.3%; left: 78%; width: 8%;">
-
-    <!-- Fila 2 -->
-    <input type="text" id="flangeJoint2" class="campo pc-only"
-    placeholder="Flange Joint no.2"
-    style="top: 62%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint2_30" class="campo pc-only"
-    placeholder="T. 30%"
-    style="top: 62%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_2" class="campo pc-only"
-    style="top: 62%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint2_70" class="campo pc-only"
-    placeholder="T. 70%"
-    style="top: 62%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_2" class="campo pc-only"
-    style="top: 62%; left:35%;">
-
-    <input type="text" id="flangeJoint2_100" class="campo pc-only"
-    placeholder="T. 100%"
-    style="top: 62%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_2" class="campo pc-only"
-    style="top: 62%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_2" class="campo pc-only"
-    style="top: 62%; left: 52%;">
-
-    <input type="checkbox" id="gap2_2" class="campo pc-only"
-    style="top: 62%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_2" class="campo pc-only"
-    style="top: 62%; left: 69.5%;">
-
-    <input type="number" id="threads_2" class="campo pc-only"
-    placeholder="0"
-    style="top: 62%; left: 78%; width: 8%;">
-
-    <!-- Fila 3 -->
-    <input type="text" id="flangeJoint3" class="campo pc-only"
-    placeholder="Flange Joint no.3"
-    style="top: 64%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint3_30" class="campo pc-only"
-    placeholder="T. 30%"
-    style="top: 64%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_3" class="campo pc-only"
-    style="top: 64%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint3_70" class="campo pc-only"
-    placeholder="T. 70%"
-    style="top: 64%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_3" class="campo pc-only"
-    style="top: 64%; left:35%;">
-
-    <input type="text" id="flangeJoint3_100" class="campo pc-only"
-    placeholder="T. 100%"
-    style="top: 64%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_3" class="campo pc-only"
-    style="top: 64%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_3" class="campo pc-only"
-    style="top: 64%; left: 52%;">
-
-    <input type="checkbox" id="gap2_3" class="campo pc-only"
-    style="top: 64%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_3" class="campo pc-only"
-    style="top: 64%; left: 69.5%;">
-
-    <input type="number" id="threads_3" class="campo pc-only"
-    placeholder="0"
-    style="top: 64%; left: 78%; width: 8%;">
-
-    <!-- Fila 4 -->
-    <input type="text" id="flangeJoint4" class="campo pc-only"
-    placeholder="Flange Joint no.4"
-    style="top: 66.1%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint4_30" class="campo pc-only"
-    placeholder="4"
-    style="top: 66.1%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_4" class="campo pc-only"
-    style="top: 66.1%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint4_70" class="campo pc-only"
-    placeholder="T. 70%"
-    style="top: 66.1%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_4" class="campo pc-only"
-    style="top: 66.1%; left:35%;">
-
-    <input type="text" id="flangeJoint4_100" class="campo pc-only"
-    placeholder="T. 100%"
-    style="top: 66.1%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_4" class="campo pc-only"
-    style="top: 66.1%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_4" class="campo pc-only"
-    style="top: 66.1%; left: 52%;">
-
-    <input type="checkbox" id="gap2_4" class="campo pc-only"
-    style="top: 66.1%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_4" class="campo pc-only"
-    style="top: 66.1%; left: 69.5%;">
-
-    <input type="number" id="threads_4" class="campo pc-only"
-    placeholder="0"
-    style="top: 66.1%; left: 78%; width: 8%;">
-
-    <!-- Fila 5 -->
-    <input type="text" id="flangeJoint5" class="campo pc-only"
-    placeholder="Flange Joint no."
-    style="top: 68.25%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint5_30" class="campo pc-only"
-    placeholder="T. 30%"
-    style="top: 68.25%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_5" class="campo pc-only"
-    style="top: 68.25%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint5_70" class="campo pc-only"
-    placeholder="T. 70%"
-    style="top: 68.25%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_5" class="campo pc-only"
-    style="top: 68.25%; left:35%;">
-
-    <input type="text" id="flangeJoint5_100" class="campo pc-only"
-    placeholder="T. 100%"
-    style="top: 68.25%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_5" class="campo pc-only"
-    style="top: 68.25%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_5" class="campo pc-only"
-    style="top: 68.25%; left: 52%;">
-
-    <input type="checkbox" id="gap2_5" class="campo pc-only"
-    style="top: 68.25%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_5" class="campo pc-only"
-    style="top: 68.25%; left: 69.5%;">
-
-    <input type="number" id="threads_5" class="campo pc-only"
-    placeholder="0"
-    style="top: 68.25%; left: 78%; width: 8%;">
-
-    <!-- Fila 6 -->
-    <input type="text" id="flangeJoint6" class="campo pc-only"
-    placeholder="Flange Joint no.6"
-    style="top: 70.3%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint6_30" class="campo pc-only"
-    placeholder="T. 30%"
-    style="top: 70.3%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_6" class="campo pc-only"
-    style="top: 70.3%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint6_70" class="campo pc-only"
-    placeholder="T. 70%"
-    style="top: 70.3%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_6" class="campo pc-only"
-    style="top: 70.3%; left:35%;">
-
-    <input type="text" id="flangeJoint6_100" class="campo pc-only"
-    placeholder="T. 100%"
-    style="top: 70.3%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_6" class="campo pc-only"
-    style="top: 70.3%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_6" class="campo pc-only"
-    style="top: 70.3%; left: 52%;">
-
-    <input type="checkbox" id="gap2_6" class="campo pc-only"
-    style="top: 70.3%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_6" class="campo pc-only"
-    style="top: 70.3%; left: 69.5%;">
-
-    <input type="number" id="threads_6" class="campo pc-only"
-    placeholder="0"
-    style="top: 70.3%; left: 78%; width: 8%;">
-
-    <!-- Fila 7 -->
-    <input type="text" id="flangeJoint7" class="campo pc-only"
-    placeholder=""
-    style="top: 72.4%; left: 13%; width: 6%;">
-
-    <input type="text" id="flangeJoint7_30" class="campo pc-only"
-    placeholder=""
-    style="top: 72.4%; left: 19%; width: 6%;">
-
-    <input type="checkbox" id="torque30_7" class="campo pc-only"
-    style="top: 72.4%; left: 25.2%;">
-
-    <input type="text" id="flangeJoint7_70" class="campo pc-only"
-    placeholder=""
-    style="top: 72.4%; left: 28%; width: 6%;">
-
-    <input type="checkbox" id="torque70_7" class="campo pc-only"
-    style="top: 72.4%; left:35%;">
-
-    <input type="text" id="flangeJoint7_100" class="campo pc-only"
-    placeholder=""
-    style="top: 72.4%; left: 38.5%; width: 6%;">
-
-    <input type="checkbox" id="torque100_7" class="campo pc-only"
-    style="top: 72.4%; left: 46.2%;">
-
-    <input type="checkbox" id="gap1_7" class="campo pc-only"
-    style="top: 72.4%; left: 52%;">
-
-    <input type="checkbox" id="gap2_7" class="campo pc-only"
-    style="top: 72.4%; left: 60.75%;">
-
-    <input type="checkbox" id="gapFinal_7" class="campo pc-only"
-    style="top: 72.4%; left: 69.5%;">
-
-    <input type="number" id="threads_7" class="campo pc-only"
-    placeholder=""
-    style="top: 72.4%; left: 78%; width: 8%;">
-
-    <!-- Versión móvil: formulario ordenado -->
-    <div class="mobile-only">
-
-    </div>
-  </div>
-
-  <!-- Scripts para generar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="script.js"></script>
