@@ -39,17 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
     todosLosRegistros = await fetchAppSheet(urlRegistros);
     const sinProtocolo = todosLosRegistros.filter(row => !row.ID_Protocolo || row.ID_Protocolo.trim() === "");
     const isometricosUnicos = [...new Set(sinProtocolo.map(row => row.ID_Isometrico))];
-    llenarSelectIsometricos(isometricosUnicos);
+    console.log('Isométricos disponibles:', isometricosUnicos);
 
     // Cargar protocolos
     todosLosProtocolos = await fetchAppSheet(urlProtocolos);
     llenarSelectProtocolos(todosLosProtocolos);
-  }
-
-  // Llenar select de isométricos (modo creación) - Ahora input
-  function llenarSelectIsometricos(lista) {
-    // Ya no es necesario llenar un select, pero mantenemos la función por compatibilidad
-    console.log('Isométricos disponibles:', lista);
   }
 
   // Llenar select de protocolos (modo visualización)
@@ -123,14 +117,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function llenarCamposProtocolo(protocolo) {
     const campos = {
       'subsistema': protocolo.Sub_Sistema,
-      'isometrico': protocolo.ID_Isometrico, // Ahora es input
+      'isometrico': protocolo.ID_Isometrico,
       'hoja': protocolo.Hoja_Referencia,
       'area': protocolo.Area_Linea,
       'torque': protocolo.Torque_100_Objetivo,
       'herramienta': protocolo.Nombre_Herramienta,
       'serie': protocolo.Serie_Herramienta,
       'flangeMaterial': protocolo.Flange_Material,
-      'diametroRating': protocolo.DiametroRating_Protocolo, // Ahora es input
+      'diametroRating': protocolo.DiametroRating_Protocolo,
       'gasketType': protocolo.Gasket_Type,
       'gasketMaterial': protocolo.Gasket_Material,
       'boltMaterial': protocolo.Bolt_Material,
@@ -178,6 +172,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (flangeJointCampo && registro.ID_Union_Maestra) {
       const ultimos4 = registro.ID_Union_Maestra.slice(-4);
       flangeJointCampo.value = ultimos4;
+      
+      // ACTIVAR TODOS LOS CHECKBOXES automáticamente cuando se llena desde Google Sheets
+      activarCheckboxesFila(fila);
     }
 
     // 2. Calcular porcentajes del torque objetivo
@@ -202,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
       threadsCampo.value = registro.Conteo_Hilos_Expuestos;
     }
 
-    // 4. Llenar checkboxes si existen datos
+    // 4. Llenar checkboxes si existen datos (mantener los datos originales si vienen)
     const checkboxes = {
       [`torque30_${fila}`]: registro.Torque_30_Done,
       [`torque70_${fila}`]: registro.Torque_70_Done,
@@ -221,56 +218,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Llenar campos de registros (uniones)
-  function llenarCamposRegistros(registros) {
-    // Limpiar todos los campos de uniones
-    for (let i = 1; i <= 7; i++) {
-      limpiarFilaUnion(i);
-    }
-
-    // Llenar con los datos de registros
-    registros.forEach((registro, index) => {
-      if (index < 7) { // Solo primeras 7 uniones
-        const fila = index + 1;
-        llenarFilaUnion(fila, registro);
-      }
-    });
-  }
-
-  // Llenar una fila específica de unión
-  function llenarFilaUnion(fila, registro) {
-    const campos = {
-      [`flangeJoint${fila}`]: registro.Flange_Joint_No || `Union ${fila}`,
-      [`flangeJoint${fila}_30`]: registro.Torque_30_Percent,
-      [`flangeJoint${fila}_70`]: registro.Torque_70_Percent,
-      [`flangeJoint${fila}_100`]: registro.Torque_100_Percent,
-      [`threads_${fila}`]: registro.Threads_After_Torque
-    };
-
-    // Llenar campos de texto
-    Object.keys(campos).forEach(campoId => {
-      const campo = document.getElementById(campoId);
-      if (campo && campos[campoId] !== undefined && campos[campoId] !== null) {
-        campo.value = campos[campoId];
-      }
-    });
-
-    // Llenar checkboxes
-    const checkboxes = {
-      [`torque30_${fila}`]: registro.Torque_30_Done,
-      [`torque70_${fila}`]: registro.Torque_70_Done,
-      [`torque100_${fila}`]: registro.Torque_100_Done,
-      [`gap1_${fila}`]: registro.Gap_Check_1,
-      [`gap2_${fila}`]: registro.Gap_Check_2,
-      [`gapFinal_${fila}`]: registro.Gap_Check_Final
-    };
-
-    Object.keys(checkboxes).forEach(checkId => {
+  // Nueva función auxiliar para activar todos los checkboxes de una fila
+  function activarCheckboxesFila(fila) {
+    const checkboxIds = [
+      `torque30_${fila}`, `torque70_${fila}`, `torque100_${fila}`,
+      `gap1_${fila}`, `gap2_${fila}`, `gapFinal_${fila}`
+    ];
+    
+    checkboxIds.forEach(checkId => {
       const check = document.getElementById(checkId);
       if (check) {
-        // En AppSheet, los checkboxes pueden venir como "TRUE"/"FALSE" o booleanos
-        const valor = checkboxes[checkId];
-        check.checked = valor === true || valor === "TRUE" || valor === "true" || valor === 1;
+        check.checked = true;
       }
     });
   }
@@ -320,52 +278,141 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Función de impresión optimizada
+  // Función de impresión optimizada para formato carta
   function imprimirFormulario() {
-    // Configurar para impresión óptima
+    // Ocultar sidebar temporalmente
+    const sidebar = document.querySelector('.sidebar');
+    const originalDisplay = sidebar.style.display;
+    sidebar.style.display = 'none';
+
+    // Configurar estilos de impresión específicos
     const formulario = document.querySelector('.formulario');
-    if (formulario) {
+    const mainContent = document.querySelector('.main-content');
+    
+    if (formulario && mainContent) {
+      // Asegurar que el formulario se imprima correctamente
       formulario.style.pageBreakInside = 'avoid';
+      formulario.style.transform = 'none';
+      mainContent.style.padding = '0';
+      mainContent.style.justifyContent = 'center';
+      mainContent.style.alignItems = 'center';
+      
+      // Ajustar tamaño de fuente para impresión si es necesario
+      const campos = document.querySelectorAll('.campo');
+      campos.forEach(campo => {
+        if (campo.classList.contains('small-text')) {
+          campo.style.fontSize = '8px';
+        } else if (campo.classList.contains('medium-text')) {
+          campo.style.fontSize = '9px';
+        } else if (campo.classList.contains('large-text')) {
+          campo.style.fontSize = '11px';
+        }
+      });
     }
     
+    // Imprimir
     window.print();
+
+    // Restaurar estilos después de imprimir
+    setTimeout(() => {
+      sidebar.style.display = originalDisplay;
+      if (formulario) {
+        formulario.style.transform = '';
+      }
+      if (mainContent) {
+        mainContent.style.padding = '';
+      }
+      // Restaurar tamaños de fuente
+      const campos = document.querySelectorAll('.campo');
+      campos.forEach(campo => {
+        campo.style.fontSize = '';
+      });
+    }, 1000);
   }
 
-  // Función para generar PDF
+  // Función optimizada para generar PDF
   async function generarPDF() {
     try {
-      // Crear un canvas para capturar el formulario
       const formulario = document.querySelector('.formulario');
       if (!formulario) {
         alert('No se encontró el formulario para generar PDF');
         return;
       }
 
-      // Usar html2canvas para capturar el contenido
+      // Preparar el formulario para captura óptima
+      const sidebar = document.querySelector('.sidebar');
+      const originalSidebarDisplay = sidebar.style.display;
+      sidebar.style.display = 'none';
+
+      // Ajustar texto para PDF
+      const campos = document.querySelectorAll('.campo');
+      const originalFontSizes = [];
+      
+      campos.forEach((campo, index) => {
+        originalFontSizes[index] = campo.style.fontSize;
+        
+        // Calcular tamaño de fuente óptimo basado en el ancho del campo
+        const fieldWidth = parseFloat(campo.style.width) || 10;
+        const textLength = campo.value ? campo.value.length : 1;
+        
+        let optimalSize;
+        if (fieldWidth < 8) {
+          optimalSize = Math.max(6, Math.min(8, (fieldWidth * 0.8) / Math.max(1, textLength * 0.3)));
+        } else if (fieldWidth < 12) {
+          optimalSize = Math.max(7, Math.min(9, (fieldWidth * 0.9) / Math.max(1, textLength * 0.3)));
+        } else {
+          optimalSize = Math.max(8, Math.min(10, (fieldWidth * 1.0) / Math.max(1, textLength * 0.25)));
+        }
+        
+        campo.style.fontSize = `${optimalSize}px`;
+        campo.style.fontWeight = '600';
+        campo.style.lineHeight = '1.1';
+      });
+
+      // Configurar html2canvas con parámetros optimizados
       const canvas = await html2canvas(formulario, {
-        scale: 2, // Alta resolución
+        scale: 3, // Alta resolución para texto nítido
         useCORS: true,
         allowTaint: false,
         backgroundColor: '#ffffff',
-        width: 816, // 8.5 pulgadas * 96 DPI
-        height: 1056, // 11 pulgadas * 96 DPI
+        width: 816, // 8.5 pulgadas a 96 DPI
+        height: 1056, // 11 pulgadas a 96 DPI
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        logging: false,
+        removeContainer: true,
+        imageTimeout: 0,
+        onclone: function(clonedDoc) {
+          // Asegurar que los estilos se apliquen en el clon
+          const clonedCampos = clonedDoc.querySelectorAll('.campo');
+          clonedCampos.forEach(campo => {
+            campo.style.color = '#000';
+            campo.style.backgroundColor = 'transparent';
+          });
+        }
       });
 
-      // Crear PDF usando jsPDF
+      // Crear PDF con dimensiones exactas de carta
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'in',
-        format: 'letter'
+        format: 'letter',
+        compress: true
       });
 
+      // Calcular dimensiones para ajustar perfectamente
+      const pageWidth = 8.5;
+      const pageHeight = 11;
+      const margin = 0.25;
+      const contentWidth = pageWidth - (margin * 2);
+      const contentHeight = pageHeight - (margin * 2);
+
       // Convertir canvas a imagen
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       
-      // Agregar imagen al PDF
-      pdf.addImage(imgData, 'PNG', 0, 0, 8.5, 11);
+      // Agregar imagen al PDF con márgenes apropiados
+      pdf.addImage(imgData, 'JPEG', margin, margin, contentWidth, contentHeight, undefined, 'FAST');
       
       // Generar nombre del archivo
       const protocoloSelect = document.getElementById("protocoloSelect");
@@ -375,11 +422,18 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Descargar PDF
       pdf.save(nombreArchivo);
+
+      // Restaurar estilos originales
+      sidebar.style.display = originalSidebarDisplay;
+      campos.forEach((campo, index) => {
+        campo.style.fontSize = originalFontSizes[index] || '';
+        campo.style.fontWeight = '';
+        campo.style.lineHeight = '';
+      });
       
     } catch (error) {
       console.error('Error generando PDF:', error);
-      // Fallback: usar impresión del navegador
-      alert('Error generando PDF. Usando impresión estándar...');
+      alert('Error generando PDF. Usando impresión estándar como alternativa...');
       imprimirFormulario();
     }
   }
@@ -427,7 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Configurar sincronización de gasketSize
   sincronizarGasketSize();
 
-  // Configurar eventos de torque y gap (código original)
+  // Configurar eventos de torque y gap
   const rango = [1, 2, 3, 4, 5, 6, 7];
   rango.forEach(num => {
     // Campos de torque
@@ -467,17 +521,23 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Activación de gap checks desde campo principal
+    // Activación automática de TODOS los checkboxes cuando flangeJoint tiene valor
     if (campoPrincipal) {
       campoPrincipal.addEventListener("input", () => {
         const tieneValor = campoPrincipal.value.trim() !== "";
+        
+        // Array con todos los checkboxes de la fila
+        const todosLosChecks = [check30, check70, check100, gap1, gap2, gapFinal];
+        
         if (tieneValor) {
-          // Auto-marcar todos los checkboxes de la fila
-          marcarCheckboxesFila(num);
+          // Marcar todos los checkboxes si hay valor en flangeJoint
+          todosLosChecks.forEach(check => {
+            if (check) check.checked = true;
+          });
         } else {
-          // Desmarcar checkboxes si se borra el contenido
-          [gap1, gap2, gapFinal].forEach(gap => {
-            if (gap) gap.checked = false;
+          // Desmarcar todos los checkboxes si se borra el valor de flangeJoint
+          todosLosChecks.forEach(check => {
+            if (check) check.checked = false;
           });
         }
       });
