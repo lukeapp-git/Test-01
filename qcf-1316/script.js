@@ -44,7 +44,43 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cargar protocolos
     todosLosProtocolos = await fetchAppSheet(urlProtocolos);
     llenarSelectProtocolos(todosLosProtocolos);
+
+    // 🔹 Actualizar contador de uniones protocolizadas
+    actualizarContadorUniones();
   }
+
+  // 🔹 Función para actualizar el contador de uniones protocolizadas
+  function actualizarContadorUniones() {
+    const unionesProtocolizadas = todosLosRegistros.filter(registro => 
+      registro.ID_Protocolo && registro.ID_Protocolo.trim() !== ""
+    );
+
+    const contadorElement = document.getElementById("contadorUniones");
+    if (contadorElement) {
+      animarContador(contadorElement, unionesProtocolizadas.length);
+    }
+  }
+
+  // 🔹 Función para animar el contador
+  function animarContador(elemento, valorFinal) {
+    const duracion = 1000;
+    const inicio = performance.now();
+
+    function actualizarNumero(tiempoActual) {
+      const progreso = Math.min((tiempoActual - inicio) / duracion, 1);
+      const valorActual = Math.floor(progreso * valorFinal);
+      elemento.textContent = valorActual;
+      
+      if (progreso < 1) {
+        requestAnimationFrame(actualizarNumero);
+      } else {
+        elemento.textContent = valorFinal;
+      }
+    }
+    requestAnimationFrame(actualizarNumero);
+  }
+
+  // ==================== FUNCIONES YA FUNCIONALES ====================
 
   // Llenar select de protocolos (modo visualización)
   function llenarSelectProtocolos(protocolos) {

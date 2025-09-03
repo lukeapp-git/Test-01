@@ -1,288 +1,319 @@
-  /* --- Estilos Generales --- */
+/* --- Estilos Generales --- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: #f4f7f6;
+  color: #333;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+/* --- Contenedor Principal de la Página --- */
+.page-container {
+  display: flex;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+/* --- Estilos específicos para el contador de uniones --- */
+.contador-uniones {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+  border: 2px solid #005f73 !important;
+}
+
+.contador-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.contador-numero {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #005f73;
+  text-shadow: 0 2px 4px rgba(0,95,115,0.1);
+  margin-bottom: 0.25rem;
+  line-height: 1;
+}
+
+.contador-label {
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+/* --- Barra Lateral y Grilla de Control --- */
+.sidebar {
+  width: 450px;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease-in-out;
+  flex-shrink: 0;
+}
+
+.sidebar-header h2 {
+  color: #005f73;
+  text-align: center;
+  margin-top: 0;
+  font-weight: 400;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.grid-item {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grid-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.grid-item.grid-span-2 {
+  grid-column: span 2;
+}
+
+.grid-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: #005f73;
+  font-size: 0.9rem;
+}
+
+.grid-item p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* --- Estilos para Controles en la Grilla --- */
+.grid-item label {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.grid-item select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.grid-item select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.botones {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn {
+  flex-grow: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary { background-color: #007bff; color: white; }
+.btn-primary:hover { background-color: #0056b3; transform: translateY(-2px); }
+.btn-secondary { background-color: #6c757d; color: white; }
+.btn-secondary:hover { background-color: #545b62; transform: translateY(-2px); }
+.btn-success { background-color: #28a745; color: white; }
+.btn-success:hover { background-color: #1e7e34; transform: translateY(-2px); }
+
+/* --- Área Principal del Formulario --- */
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #e9ecef;
+  min-width: 0; /* Permite que flexbox funcione correctamente */
+}
+
+.formulario {
+  position: relative;
+  width: 8.5in;
+  height: 11in;
+  background-color: white;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  transform-origin: top center;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.formulario:hover {
+  transform: scale(1.01);
+}
+
+.fondo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.campo {
+  position: absolute;
+  font-size: 11px;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  padding: 1px 2px;
+  border: 0;
+  background-color: transparent;
+  color: #000;
+  font-weight: 500;
+  line-height: 1.2;
+  /* Mejoras para mejor renderizado */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Campos específicos con ajustes de tamaño */
+.campo.small-text {
+  font-size: 9px;
+}
+
+.campo.medium-text {
+  font-size: 10px;
+}
+
+.campo.large-text {
+  font-size: 12px;
+}
+
+/* Checkboxes específicos */
+.campo[type="checkbox"] {
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+
+/* --- Estilos de Impresión Optimizados --- */
+@media print {
   * {
-    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: white !important;
     margin: 0;
-    background-color: #f4f7f6;
-    color: #333;
-    line-height: 1.6;
-    overflow-x: auto;
+    padding: 0;
   }
 
-  /* --- Contenedor Principal de la Página --- */
   .page-container {
-    display: flex;
-    width: 100vw;
-    min-height: 100vh;
+    display: block !important;
+    width: 100% !important;
+    height: 100vh !important;
   }
 
-  /* --- Barra Lateral y Grilla de Control --- */
   .sidebar {
-    width: 450px;
-    background-color: #ffffff;
-    padding: 1.5rem;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease-in-out;
-    flex-shrink: 0;
+    display: none !important;
   }
 
-  .sidebar-header h2 {
-    color: #005f73;
-    text-align: center;
-    margin-top: 0;
-    font-weight: 400;
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 1rem;
-  }
-
-  .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-
-  .grid-item {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 1rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .grid-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-
-  .grid-item.grid-span-2 {
-    grid-column: span 2;
-  }
-
-  .grid-item h4 {
-    margin: 0 0 0.5rem 0;
-    color: #005f73;
-    font-size: 0.9rem;
-  }
-
-  .grid-item p {
-    margin: 0;
-    font-size: 0.85rem;
-    color: #6c757d;
-  }
-
-  /* --- Estilos para Controles en la Grilla --- */
-  .grid-item label {
-    font-weight: bold;
-    color: #333;
-    font-size: 0.9rem;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  .grid-item select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  .grid-item select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-  }
-
-  .botones {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-  }
-
-  .btn {
-    flex-grow: 1;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-  }
-
-  .btn-primary { background-color: #007bff; color: white; }
-  .btn-primary:hover { background-color: #0056b3; transform: translateY(-2px); }
-  .btn-secondary { background-color: #6c757d; color: white; }
-  .btn-secondary:hover { background-color: #545b62; transform: translateY(-2px); }
-  .btn-success { background-color: #28a745; color: white; }
-  .btn-success:hover { background-color: #1e7e34; transform: translateY(-2px); }
-
-  /* --- Área Principal del Formulario --- */
   .main-content {
-    flex-grow: 1;
-    padding: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    background-color: #e9ecef;
-    min-width: 0; /* Permite que flexbox funcione correctamente */
+    display: block !important;
+    padding: 0 !important;
+    background: white !important;
+    width: 100% !important;
+    height: 100vh !important;
   }
 
   .formulario {
-    position: relative;
-    width: 8.5in;
-    height: 11in;
-    background-color: white;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    transform-origin: top center;
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-  }
-
-  .formulario:hover {
-    transform: scale(1.01);
+    position: relative !important;
+    width: 100% !important;
+    height: 100vh !important;
+    max-width: 8.5in !important;
+    max-height: 11in !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    transform: none !important;
+    page-break-inside: avoid !important;
   }
 
   .fondo {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   .campo {
-    position: absolute;
-    font-size: 11px;
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-    padding: 1px 2px;
-    border: 0;
-    background-color: transparent;
-    color: #000;
-    font-weight: 500;
-    line-height: 1.2;
-    /* Mejoras para mejor renderizado */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    background-color: transparent !important;
+    border: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
-  /* Campos específicos con ajustes de tamaño */
   .campo.small-text {
-    font-size: 9px;
+    font-size: 8px !important;
   }
 
   .campo.medium-text {
-    font-size: 10px;
+    font-size: 9px !important;
   }
 
   .campo.large-text {
-    font-size: 12px;
+    font-size: 11px !important;
   }
 
-  /* Checkboxes específicos */
-  .campo[type="checkbox"] {
-    width: 12px;
-    height: 12px;
-    cursor: pointer;
+  /* Ocultar elementos no necesarios para impresión */
+  .no-print {
+    display: none !important;
   }
 
-  /* --- Estilos de Impresión Optimizados --- */
-  @media print {
-    * {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-
-    body {
-      background: white !important;
-      margin: 0;
-      padding: 0;
-    }
-
-    .page-container {
-      display: block !important;
-      width: 100% !important;
-      height: 100vh !important;
-    }
-
-    .sidebar {
-      display: none !important;
-    }
-
-    .main-content {
-      display: block !important;
-      padding: 0 !important;
-      background: white !important;
-      width: 100% !important;
-      height: 100vh !important;
-    }
-
-    .formulario {
-      position: relative !important;
-      width: 100% !important;
-      height: 100vh !important;
-      max-width: 8.5in !important;
-      max-height: 11in !important;
-      margin: 0 auto !important;
-      box-shadow: none !important;
-      transform: none !important;
-      page-break-inside: avoid !important;
-    }
-
-    .fondo {
-      width: 100% !important;
-      height: 100% !important;
-    }
-
-    .campo {
-      font-size: 10px !important;
-      font-weight: 600 !important;
-      color: #000 !important;
-      background-color: transparent !important;
-      border: none !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-
-    .campo.small-text {
-      font-size: 8px !important;
-    }
-
-    .campo.medium-text {
-      font-size: 9px !important;
-    }
-
-    .campo.large-text {
-      font-size: 11px !important;
-    }
-
-    /* Ocultar elementos no necesarios para impresión */
-    .no-print {
-      display: none !important;
-    }
-
-    @page {
-      size: letter;
-      margin: 0.25in;
-    }
+  @page {
+    size: letter;
+    margin: 0.25in;
   }
+}
 
-  /* --- Estilos responsivos para pantallas grandes --- */
-  @media (min-width: 1400px) {
-    .formulario {
-      transform: scale(1.1);
-    }
+/* --- Estilos responsivos para pantallas grandes --- */
+@media (min-width: 1400px) {
+  .formulario {
+    transform: scale(1.1);
   }
+}
 
-  @media (min-width: 1600px) {
-    .formulario {
-      transform: scale(1.2);
-    }
+@media (min-width: 1600px) {
+  .formulario {
+    transform: scale(1.2);
   }
+}

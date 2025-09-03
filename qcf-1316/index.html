@@ -15,9 +15,12 @@
         <h2>Panel de Control</h2>
       </div>
       <div class="grid-container">
-        <div class="grid-item">
+        <div class="grid-item contador-uniones">
           <h4>Uniones Torquedas Protocolizadas</h4>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <div class="contador-display">
+            <span class="contador-numero" id="contadorUniones">0</span>
+            <span class="contador-label">registros</span>
+          </div>
         </div>
         <div class="grid-item">
           <h4>Checkboxs ✅</h4>
@@ -27,7 +30,7 @@
         </div>
         
         <div class="grid-item">
-          <label for="protocoloSelect">Ver Protocolo Existente:</label>
+          <label for="protocoloSelect">Ver Protocolos:</label>
           <select id="protocoloSelect">
             <option value="">Cargando protocolos...</option>
           </select>
@@ -53,7 +56,7 @@
           <p>
             • Utiliza papel tamaño carta (8.5" x 11").<br>
             • Desactiva cualquier ajuste automático de escala o centrado.<br>
-            • Asegúrate de que la opción “Ajustar al área imprimible” esté desactivada.<br>
+            • Asegúrate de que la opción "Ajustar al área imprimible" esté desactivada.<br>
             • Imprime en calidad alta para preservar detalles del diseño.
           </p>
         </div>
@@ -61,7 +64,7 @@
           <p>
             • Verifica que la vista previa de impresión respete el diseño original.<br>
             • No modifiques el tamaño del archivo ni lo conviertas antes de imprimir.<br>
-            • Si imprimes desde navegador, usa la opción “Más configuraciones” para ajustar márgenes a “Ninguno”.<br>
+            • Si imprimes desde navegador, usa la opción "Más configuraciones" para ajustar márgenes a "Ninguno".<br>
             • Evita imprimir desde apps móviles que no respeten el formato sin márgenes.
           </p>
         </div>
