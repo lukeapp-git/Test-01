@@ -188,9 +188,9 @@ if (torqueObjetivo) {
   const campo70 = document.getElementById(`flangeJoint${fila}_70`);
   const campo100 = document.getElementById(`flangeJoint${fila}_100`);
 
-  if (campo30) campo30.value = (torque30 < 30) ? "N/A" : torque30;
-  if (campo70) campo70.value = (torque70 < 30) ? "N/A" : torque70;
-  if (campo100) campo100.value = (torque100 < 30) ? "N/A" : torque100;
+  if (campo30) campo30.value = (torque30 < 30) ? "Manual" : torque30;
+  if (campo70) campo70.value = (torque70 < 30) ? "Manual" : torque70;
+  if (campo100) campo100.value = (torque100 < 30) ? "Manual" : torque100;
 }
 
     // 3. Llenar conteo de hilos expuestos
