@@ -178,20 +178,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 2. Calcular porcentajes del torque objetivo
-    if (torqueObjetivo) {
-      const torque100 = parseFloat(torqueObjetivo);
-      const torque30 = Math.round(torque100 * 0.3);
-      const torque70 = Math.round(torque100 * 0.7);
+if (torqueObjetivo) {
+  const torque100 = parseFloat(torqueObjetivo);
+  const torque30 = Math.round(torque100 * 0.3);
+  const torque70 = Math.round(torque100 * 0.7);
 
-      // Llenar campos de torque calculados
-      const campo30 = document.getElementById(`flangeJoint${fila}_30`);
-      const campo70 = document.getElementById(`flangeJoint${fila}_70`);
-      const campo100 = document.getElementById(`flangeJoint${fila}_100`);
+  // Llenar campos de torque calculados
+  const campo30 = document.getElementById(`flangeJoint${fila}_30`);
+  const campo70 = document.getElementById(`flangeJoint${fila}_70`);
+  const campo100 = document.getElementById(`flangeJoint${fila}_100`);
 
-      if (campo30) campo30.value = torque30;
-      if (campo70) campo70.value = torque70;
-      if (campo100) campo100.value = torque100;
-    }
+  if (campo30) campo30.value = (torque30 < 30) ? "N/A" : torque30;
+  if (campo70) campo70.value = (torque70 < 30) ? "N/A" : torque70;
+  if (campo100) campo100.value = (torque100 < 30) ? "N/A" : torque100;
+}
 
     // 3. Llenar conteo de hilos expuestos
     const threadsCampo = document.getElementById(`threads_${fila}`);
