@@ -367,192 +367,260 @@ if (torqueObjetivo) {
     }, 1000);
   }
 
-  // FUNCIÓN PDF CORREGIDA - SIN CORTES
-  async function generarPDF() {
-    try {
-      const formulario = document.querySelector('.formulario');
-      if (!formulario) {
-        alert('No se encontró el formulario para generar PDF');
+// FUNCIÓN PDF CORREGIDA - CON MEJOR AJUSTE DE TEXTO
+async function generarPDF() {
+  try {
+    const formulario = document.querySelector('.formulario');
+    if (!formulario) {
+      alert('No se encontró el formulario para generar PDF');
+      return;
+    }
+
+    console.log('Iniciando generación de PDF...');
+    
+    // Función auxiliar para calcular el tamaño óptimo del texto
+    function calcularTamanoOptimo(campo) {
+      if (campo.type === 'checkbox') return null;
+      
+      const rect = campo.getBoundingClientRect();
+      const text = campo.value ? campo.value.toString().trim() : '';
+      
+      if (!text) return 7; // Tamaño mínimo para campos vacíos
+      
+      // Crear elemento temporal para medir texto
+      const temp = document.createElement('span');
+      temp.style.visibility = 'hidden';
+      temp.style.position = 'absolute';
+      temp.style.whiteSpace = 'nowrap';
+      temp.style.fontFamily = 'Arial, sans-serif';
+      temp.style.fontWeight = '600';
+      temp.textContent = text;
+      document.body.appendChild(temp);
+      
+      let fontSize = 12;
+      let fits = false;
+      
+      // Reducir tamaño hasta que quepa
+      while (fontSize >= 5 && !fits) {
+        temp.style.fontSize = fontSize + 'px';
+        const tempWidth = temp.getBoundingClientRect().width;
+        
+        // Dejar margen de 4px a cada lado
+        if (tempWidth <= (rect.width - 8)) {
+          fits = true;
+        } else {
+          fontSize--;
+        }
+      }
+      
+      document.body.removeChild(temp);
+      return Math.max(5, fontSize); // Mínimo 5px
+    }
+    
+    // Preparar el formulario para captura óptima
+    const sidebar = document.querySelector('.sidebar');
+    const originalSidebarDisplay = sidebar.style.display;
+    sidebar.style.display = 'none';
+
+    // Guardar estilos originales del formulario
+    const originalFormularioStyle = {
+      transform: formulario.style.transform,
+      width: formulario.style.width,
+      height: formulario.style.height,
+      maxWidth: formulario.style.maxWidth,
+      maxHeight: formulario.style.maxHeight
+    };
+
+    // Ajustar el formulario para captura perfecta (dimensiones exactas)
+    formulario.style.transform = 'none';
+    formulario.style.width = '816px';  // 8.5 pulgadas a 96 DPI
+    formulario.style.height = '1056px'; // 11 pulgadas a 96 DPI
+    formulario.style.maxWidth = '816px';
+    formulario.style.maxHeight = '1056px';
+
+    // Ajustar texto para PDF con medición real
+    const campos = document.querySelectorAll('.campo');
+    const originalStyles = [];
+    
+    campos.forEach((campo, index) => {
+      // Guardar estilos originales
+      originalStyles[index] = {
+        fontSize: campo.style.fontSize,
+        fontWeight: campo.style.fontWeight,
+        lineHeight: campo.style.lineHeight,
+        color: campo.style.color,
+        textAlign: campo.style.textAlign,
+        overflow: campo.style.overflow,
+        whiteSpace: campo.style.whiteSpace,
+        textOverflow: campo.style.textOverflow
+      };
+      
+      // Solo ajustar campos de texto (no checkboxes)
+      if (campo.type === 'checkbox') {
         return;
       }
-
-      console.log('Iniciando generación de PDF...');
       
-      // Preparar el formulario para captura óptima
-      const sidebar = document.querySelector('.sidebar');
-      const originalSidebarDisplay = sidebar.style.display;
-      sidebar.style.display = 'none';
-
-      // Guardar estilos originales del formulario
-      const originalFormularioStyle = {
-        transform: formulario.style.transform,
-        width: formulario.style.width,
-        height: formulario.style.height,
-        maxWidth: formulario.style.maxWidth,
-        maxHeight: formulario.style.maxHeight
-      };
-
-      // Ajustar el formulario para captura perfecta (dimensiones exactas)
-      formulario.style.transform = 'none';
-      formulario.style.width = '816px';  // 8.5 pulgadas a 96 DPI
-      formulario.style.height = '1056px'; // 11 pulgadas a 96 DPI
-      formulario.style.maxWidth = '816px';
-      formulario.style.maxHeight = '1056px';
-
-      // Ajustar texto para PDF
-      const campos = document.querySelectorAll('.campo');
-      const originalStyles = [];
+      // Calcular tamaño óptimo basado en medición real
+      const optimalSize = calcularTamanoOptimo(campo);
       
-      campos.forEach((campo, index) => {
-        // Guardar estilos originales
-        originalStyles[index] = {
-          fontSize: campo.style.fontSize,
-          fontWeight: campo.style.fontWeight,
-          lineHeight: campo.style.lineHeight,
-          color: campo.style.color
-        };
+      if (optimalSize) {
+        // Aplicar estilos optimizados
+        campo.style.fontSize = `${optimalSize}px`;
+        campo.style.fontWeight = '600';
+        campo.style.lineHeight = '1.1';
+        campo.style.color = '#000000';
+        campo.style.textAlign = 'center';
+        campo.style.overflow = 'hidden';
+        campo.style.whiteSpace = 'nowrap';
+        campo.style.textOverflow = 'ellipsis';
+        campo.style.padding = '1px';
         
-        // Aplicar estilos optimizados para PDF
-        const fieldWidth = parseFloat(campo.style.width) || 10;
-        const textLength = campo.value ? campo.value.length : 1;
-        
-        let optimalSize;
-        if (fieldWidth < 8) {
-          optimalSize = Math.max(8, Math.min(10, (fieldWidth * 1.4) / Math.max(1, textLength * 0.2)));
-        } else if (fieldWidth < 12) {
-          optimalSize = Math.max(9, Math.min(11, (fieldWidth * 1.2) / Math.max(1, textLength * 0.2)));
-        } else {
-          optimalSize = Math.max(10, Math.min(12, (fieldWidth * 1.0) / Math.max(1, textLength * 0.15)));
+        // Log para debug
+        if (campo.value && campo.value.trim()) {
+          console.log(`Campo: "${campo.value}" -> ${optimalSize}px`);
+        }
+      }
+    });
+
+    // Esperar un momento para que se apliquen los estilos
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    console.log('Capturando formulario...');
+    
+    // Configurar html2canvas con parámetros optimizados
+    const canvas = await html2canvas(formulario, {
+      scale: 2, // Buena calidad sin problemas de memoria
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: '#ffffff',
+      width: 816,
+      height: 1056,
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0,
+      logging: false,
+      removeContainer: true,
+      imageTimeout: 15000,
+      onclone: function(clonedDoc) {
+        const clonedFormulario = clonedDoc.querySelector('.formulario');
+        if (clonedFormulario) {
+          clonedFormulario.style.transform = 'none';
+          clonedFormulario.style.width = '816px';
+          clonedFormulario.style.height = '1056px';
+          clonedFormulario.style.maxWidth = '816px';
+          clonedFormulario.style.maxHeight = '1056px';
+          clonedFormulario.style.overflow = 'visible';
         }
         
-        campo.style.fontSize = `${optimalSize}px`;
-        campo.style.fontWeight = '700';
-        campo.style.lineHeight = '1.0';
-        campo.style.color = '#000000';
-      });
-
-      // Esperar un momento para que se apliquen los estilos
-      await new Promise(resolve => setTimeout(resolve, 200));
-
-      console.log('Capturando formulario...');
-      
-      // Configurar html2canvas con parámetros optimizados
-      const canvas = await html2canvas(formulario, {
-        scale: 2, // Buena calidad sin problemas de memoria
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        width: 816,
-        height: 1056,
-        x: 0,
-        y: 0,
-        scrollX: 0,
-        scrollY: 0,
-        logging: false,
-        removeContainer: true,
-        imageTimeout: 15000,
-        onclone: function(clonedDoc) {
-          const clonedFormulario = clonedDoc.querySelector('.formulario');
-          if (clonedFormulario) {
-            clonedFormulario.style.transform = 'none';
-            clonedFormulario.style.width = '816px';
-            clonedFormulario.style.height = '1056px';
-            clonedFormulario.style.maxWidth = '816px';
-            clonedFormulario.style.maxHeight = '1056px';
-            clonedFormulario.style.overflow = 'visible';
-          }
-          
-          const clonedCampos = clonedDoc.querySelectorAll('.campo');
-          clonedCampos.forEach(campo => {
+        const clonedCampos = clonedDoc.querySelectorAll('.campo');
+        clonedCampos.forEach(campo => {
+          // Solo aplicar estilos a campos de texto, no checkboxes
+          if (campo.type !== 'checkbox') {
             campo.style.color = '#000000';
             campo.style.backgroundColor = 'transparent';
             campo.style.border = 'none';
-          });
-        }
-      });
-
-      console.log(`Canvas generado: ${canvas.width}x${canvas.height}`);
-
-      // Crear PDF con dimensiones exactas de carta
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'letter',
-        compress: true
-      });
-
-      // Dimensiones en mm (carta: 215.9 x 279.4 mm)
-      const pageWidth = 215.9;
-      const pageHeight = 279.4;
-      const margin = 6; // Margen de 6mm
-      const contentWidth = pageWidth - (margin * 2);
-      const contentHeight = pageHeight - (margin * 2);
-
-      // Mantener la relación de aspecto del formulario original (8.5:11)
-      const targetRatio = 8.5 / 11;
-      const availableRatio = contentWidth / contentHeight;
-      
-      let finalWidth, finalHeight;
-      
-      if (availableRatio > targetRatio) {
-        // Hay más ancho disponible, ajustar por altura
-        finalHeight = contentHeight;
-        finalWidth = finalHeight * targetRatio;
-      } else {
-        // Hay más altura disponible, ajustar por ancho
-        finalWidth = contentWidth;
-        finalHeight = finalWidth / targetRatio;
+            campo.style.textAlign = 'center';
+            campo.style.overflow = 'hidden';
+            campo.style.whiteSpace = 'nowrap';
+            campo.style.textOverflow = 'ellipsis';
+            campo.style.padding = '0px';
+            campo.style.lineHeight = '1.1';
+          } else {
+            // Para checkboxes, mantener estilos básicos
+            campo.style.backgroundColor = 'transparent';
+            campo.style.border = 'none';
+          }
+        });
       }
+    });
 
-      // Centrar la imagen
-      const xOffset = margin + (contentWidth - finalWidth) / 2;
-      const yOffset = margin + (contentHeight - finalHeight) / 2;
+    console.log(`Canvas generado: ${canvas.width}x${canvas.height}`);
 
-      // Convertir canvas a imagen
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      
-      console.log(`Añadiendo imagen al PDF: ${finalWidth.toFixed(1)}x${finalHeight.toFixed(1)}mm en posición (${xOffset.toFixed(1)}, ${yOffset.toFixed(1)})`);
-      
-      // Agregar imagen al PDF
-      pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight, undefined, 'FAST');
-      
-      // Generar nombre del archivo
-      const protocoloSelect = document.getElementById("protocoloSelect");
-      const protocoloId = protocoloSelect.value || 'QCF-1316';
-      const fecha = new Date().toISOString().slice(0, 10);
-      const nombreArchivo = `${protocoloId}_${fecha}.pdf`;
-      
-      // Descargar PDF
-      pdf.save(nombreArchivo);
-      console.log('PDF generado y descargado exitosamente');
+    // Crear PDF con dimensiones exactas de carta
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter',
+      compress: true
+    });
 
-      // Restaurar estilos originales del formulario
-      formulario.style.transform = originalFormularioStyle.transform || '';
-      formulario.style.width = originalFormularioStyle.width || '';
-      formulario.style.height = originalFormularioStyle.height || '';
-      formulario.style.maxWidth = originalFormularioStyle.maxWidth || '';
-      formulario.style.maxHeight = originalFormularioStyle.maxHeight || '';
+    // Dimensiones en mm (carta: 215.9 x 279.4 mm)
+    const pageWidth = 215.9;
+    const pageHeight = 279.4;
+    const margin = 6; // Margen de 6mm
+    const contentWidth = pageWidth - (margin * 2);
+    const contentHeight = pageHeight - (margin * 2);
 
-      // Restaurar sidebar
-      sidebar.style.display = originalSidebarDisplay;
-
-      // Restaurar estilos de campos
-      campos.forEach((campo, index) => {
-        if (originalStyles[index]) {
-          campo.style.fontSize = originalStyles[index].fontSize || '';
-          campo.style.fontWeight = originalStyles[index].fontWeight || '';
-          campo.style.lineHeight = originalStyles[index].lineHeight || '';
-          campo.style.color = originalStyles[index].color || '';
-        }
-      });
-      
-    } catch (error) {
-      console.error('Error generando PDF:', error);
-      alert('Error generando PDF: ' + error.message + '\nUsando impresión estándar como alternativa...');
-      imprimirFormulario();
+    // Mantener la relación de aspecto del formulario original (8.5:11)
+    const targetRatio = 8.5 / 11;
+    const availableRatio = contentWidth / contentHeight;
+    
+    let finalWidth, finalHeight;
+    
+    if (availableRatio > targetRatio) {
+      // Hay más ancho disponible, ajustar por altura
+      finalHeight = contentHeight;
+      finalWidth = finalHeight * targetRatio;
+    } else {
+      // Hay más altura disponible, ajustar por ancho
+      finalWidth = contentWidth;
+      finalHeight = finalWidth / targetRatio;
     }
+
+    // Centrar la imagen
+    const xOffset = margin + (contentWidth - finalWidth) / 2;
+    const yOffset = margin + (contentHeight - finalHeight) / 2;
+
+    // Convertir canvas a imagen
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+    
+    console.log(`Añadiendo imagen al PDF: ${finalWidth.toFixed(1)}x${finalHeight.toFixed(1)}mm en posición (${xOffset.toFixed(1)}, ${yOffset.toFixed(1)})`);
+    
+    // Agregar imagen al PDF
+    pdf.addImage(imgData, 'JPEG', xOffset, yOffset, finalWidth, finalHeight, undefined, 'FAST');
+    
+    // Generar nombre del archivo
+    const protocoloSelect = document.getElementById("protocoloSelect");
+    const protocoloId = protocoloSelect.value || 'QCF-1316';
+    const fecha = new Date().toISOString().slice(0, 10);
+    const nombreArchivo = `${protocoloId}_${fecha}.pdf`;
+    
+    // Descargar PDF
+    pdf.save(nombreArchivo);
+    console.log('PDF generado y descargado exitosamente');
+
+    // Restaurar estilos originales del formulario
+    formulario.style.transform = originalFormularioStyle.transform || '';
+    formulario.style.width = originalFormularioStyle.width || '';
+    formulario.style.height = originalFormularioStyle.height || '';
+    formulario.style.maxWidth = originalFormularioStyle.maxWidth || '';
+    formulario.style.maxHeight = originalFormularioStyle.maxHeight || '';
+
+    // Restaurar sidebar
+    sidebar.style.display = originalSidebarDisplay;
+
+    // Restaurar estilos de campos
+    campos.forEach((campo, index) => {
+      if (originalStyles[index]) {
+        campo.style.fontSize = originalStyles[index].fontSize || '';
+        campo.style.fontWeight = originalStyles[index].fontWeight || '';
+        campo.style.lineHeight = originalStyles[index].lineHeight || '';
+        campo.style.color = originalStyles[index].color || '';
+        campo.style.textAlign = originalStyles[index].textAlign || '';
+        campo.style.overflow = originalStyles[index].overflow || '';
+        campo.style.whiteSpace = originalStyles[index].whiteSpace || '';
+        campo.style.textOverflow = originalStyles[index].textOverflow || '';
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error generando PDF:', error);
+    alert('Error generando PDF: ' + error.message + '\nUsando impresión estándar como alternativa...');
+    imprimirFormulario();
   }
+}
 
   // Configurar modo de edición
   function configurarModo() {
