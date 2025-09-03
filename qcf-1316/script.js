@@ -316,57 +316,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Función de impresión optimizada para formato carta
   function imprimirFormulario() {
-    // Ocultar sidebar temporalmente
-    const sidebar = document.querySelector('.sidebar');
-    const originalDisplay = sidebar.style.display;
-    sidebar.style.display = 'none';
-
-    // Configurar estilos de impresión específicos
-    const formulario = document.querySelector('.formulario');
-    const mainContent = document.querySelector('.main-content');
-    
-    if (formulario && mainContent) {
-      // Asegurar que el formulario se imprima correctamente
-      formulario.style.pageBreakInside = 'avoid';
-      formulario.style.transform = 'none';
-      mainContent.style.padding = '0';
-      mainContent.style.justifyContent = 'center';
-      mainContent.style.alignItems = 'center';
-      
-      // Ajustar tamaño de fuente para impresión si es necesario
-      const campos = document.querySelectorAll('.campo');
-      campos.forEach(campo => {
-        if (campo.classList.contains('small-text')) {
-          campo.style.fontSize = '8px';
-        } else if (campo.classList.contains('medium-text')) {
-          campo.style.fontSize = '9px';
-        } else if (campo.classList.contains('large-text')) {
-          campo.style.fontSize = '11px';
-        }
-      });
-    }
-    
-    // Imprimir
     window.print();
-
-    // Restaurar estilos después de imprimir
-    setTimeout(() => {
-      sidebar.style.display = originalDisplay;
-      if (formulario) {
-        formulario.style.transform = '';
-      }
-      if (mainContent) {
-        mainContent.style.padding = '';
-      }
-      // Restaurar tamaños de fuente
-      const campos = document.querySelectorAll('.campo');
-      campos.forEach(campo => {
-        campo.style.fontSize = '';
-      });
-    }, 1000);
   }
 
-  // ==================== FUNCIÓN PDF MEJORADA ====================
+  // ==================== FUNCIÓN PDF CORREGIDA Y MÁS ESTABLE ====================
   async function generarPDF() {
     try {
       const formulario = document.querySelector('.formulario');
@@ -375,15 +328,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      console.log('Iniciando generación de PDF con método mejorado...');
+      console.log('Iniciando generación de PDF con método corregido...');
 
-      // Función auxiliar MEJORADA para calcular el tamaño óptimo del texto
+      // Función auxiliar para calcular el tamaño óptimo del texto
       function calcularTamanoOptimo(campo) {
         if (campo.type === 'checkbox') return null;
-
         const rect = campo.getBoundingClientRect();
         const text = campo.value ? campo.value.toString().trim() : '';
-        
         if (!text) return 7;
 
         const temp = document.createElement('span');
@@ -395,16 +346,13 @@ document.addEventListener("DOMContentLoaded", () => {
         temp.textContent = text;
         document.body.appendChild(temp);
         
-        let fontSize = 12; // Empezar con un tamaño de fuente mayor
+        let fontSize = 12;
         let fits = false;
         
-        // Reducir tamaño hasta que quepa en ancho Y ALTO
         while (fontSize >= 5 && !fits) {
           temp.style.fontSize = fontSize + 'px';
           const tempRect = temp.getBoundingClientRect();
-          
-          // Dejar un margen de seguridad (ej. 4px horizontal, 2px vertical)
-          if (tempRect.width <= (rect.width - 4) && tempRect.height <= (rect.height - 2)) {
+          if (tempRect.width < (rect.width - 4) && tempRect.height < (rect.height - 2)) {
             fits = true;
           } else {
             fontSize--;
@@ -414,6 +362,16 @@ document.addEventListener("DOMContentLoaded", () => {
         document.body.removeChild(temp);
         return Math.max(5, fontSize);
       }
+      
+      // 1. Calcular todos los tamaños de fuente sin modificar los elementos visibles
+      const campos = document.querySelectorAll('.campo');
+      const optimalSizes = new Map();
+      campos.forEach(campo => {
+        if (campo.id && campo.type !== 'checkbox') {
+          const size = calcularTamanoOptimo(campo);
+          optimalSizes.set(campo.id, size);
+        }
+      });
 
       const sidebar = document.querySelector('.sidebar');
       const originalSidebarDisplay = sidebar.style.display;
@@ -423,47 +381,28 @@ document.addEventListener("DOMContentLoaded", () => {
         transform: formulario.style.transform,
         boxShadow: formulario.style.boxShadow
       };
-
-      // Ajustar el formulario para captura de alta calidad
       formulario.style.transform = 'none';
       formulario.style.boxShadow = 'none';
-
-      const campos = document.querySelectorAll('.campo');
-      const originalStyles = [];
-
-      campos.forEach((campo, index) => {
-        originalStyles[index] = {
-          fontSize: campo.style.fontSize,
-          color: campo.style.color,
-          backgroundColor: campo.style.backgroundColor
-        };
-
-        if (campo.type !== 'checkbox') {
-          const optimalSize = calcularTamanoOptimo(campo);
-          if (optimalSize) {
-            campo.style.fontSize = `${optimalSize}px`;
-            campo.style.color = '#000000'; // Forzar color negro para legibilidad
-            campo.style.backgroundColor = 'transparent'; // Fondo transparente
-          }
-        }
-      });
       
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      console.log('Capturando formulario con alta resolución...');
+      console.log('Capturando formulario...');
 
       const canvas = await html2canvas(formulario, {
-        scale: 3, // Aumentar escala para mayor calidad
+        scale: 3,
         useCORS: true,
         allowTaint: false,
         backgroundColor: '#ffffff',
         logging: false,
         onclone: (clonedDoc) => {
+            // 2. Aplicar los estilos SOLO al clon del formulario
             const clonedCampos = clonedDoc.querySelectorAll('.campo');
             clonedCampos.forEach(campo => {
-                if (campo.type !== 'checkbox') {
-                    campo.style.color = '#000000 !important';
-                    campo.style.backgroundColor = 'transparent !important';
+                if (campo.id && campo.type !== 'checkbox') {
+                    const optimalSize = optimalSizes.get(campo.id);
+                    if (optimalSize) {
+                        campo.style.fontSize = `${optimalSize}px`;
+                    }
+                    campo.style.color = '#000000';
+                    campo.style.backgroundColor = 'transparent';
                     campo.style.border = 'none';
                 }
             });
@@ -483,8 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const pageWidth = 215.9;
       const pageHeight = 279.4;
       const imgData = canvas.toDataURL('image/jpeg', 0.92);
-
-      // Añadir imagen ocupando toda la página
+      
       pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
       
       const protocoloSelect = document.getElementById("protocoloSelect");
@@ -495,18 +433,10 @@ document.addEventListener("DOMContentLoaded", () => {
       pdf.save(nombreArchivo);
       console.log('PDF generado y descargado.');
 
-      // Restaurar estilos
+      // Restaurar estilos del formulario y sidebar
       formulario.style.transform = originalFormularioStyle.transform;
       formulario.style.boxShadow = originalFormularioStyle.boxShadow;
       sidebar.style.display = originalSidebarDisplay;
-
-      campos.forEach((campo, index) => {
-        if (originalStyles[index]) {
-          campo.style.fontSize = originalStyles[index].fontSize;
-          campo.style.color = originalStyles[index].color;
-          campo.style.backgroundColor = originalStyles[index].backgroundColor;
-        }
-      });
       
     } catch (error) {
       console.error('Error generando PDF:', error);
