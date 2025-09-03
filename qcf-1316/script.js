@@ -167,7 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
       'boltSize': protocolo.Bolt_Size,
       'boltQty': protocolo.Bolt_Qty_Total,
       'lubricantName': protocolo.Lubricant_Name,
-      'washerDesc': protocolo.Washer_Desc
+      'washerDesc': protocolo.Washer_Desc,
+      'idTestPack': protocolo.ID_TestPack // Campo nuevo para Test Pack
     };
 
     // Llenar campos de texto
@@ -177,6 +178,12 @@ document.addEventListener("DOMContentLoaded", () => {
         campo.value = campos[campoId];
       }
     });
+
+    // Llenar campo Correlativo (últimos 4 caracteres del ID_Protocolo)
+    const correlativoCampo = document.getElementById('correlativo');
+    if (correlativoCampo && protocolo.ID_Protocolo) {
+      correlativoCampo.value = protocolo.ID_Protocolo.slice(-4);
+    }
 
     // Sincronizar gasketSize con diametroRating
     const gasketSize = document.getElementById("gasketSize");
@@ -296,7 +303,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const camposPrincipales = [
       'subsistema', 'isometrico', 'hoja', 'area', 'torque', 'herramienta', 'serie',
       'flangeMaterial', 'diametroRating', 'gasketType', 'gasketMaterial', 'gasketSize',
-      'boltMaterial', 'boltSize', 'boltQty', 'lubricantName', 'washerDesc'
+      'boltMaterial', 'boltSize', 'boltQty', 'lubricantName', 'washerDesc',
+      'correlativo', 'idTestPack' // Añadir nuevos campos para limpiar
     ];
 
     camposPrincipales.forEach(id => {
@@ -319,130 +327,9 @@ document.addEventListener("DOMContentLoaded", () => {
     window.print();
   }
 
-  // ==================== FUNCIÓN PDF CORREGIDA Y MÁS ESTABLE ====================
+  // ==================== FUNCIÓN PDF (DESACTIVADA) ====================
   async function generarPDF() {
-    try {
-      const formulario = document.querySelector('.formulario');
-      if (!formulario) {
-        alert('No se encontró el formulario para generar PDF');
-        return;
-      }
-
-      console.log('Iniciando generación de PDF con método corregido...');
-
-      // Función auxiliar para calcular el tamaño óptimo del texto
-      function calcularTamanoOptimo(campo) {
-        if (campo.type === 'checkbox') return null;
-        const rect = campo.getBoundingClientRect();
-        const text = campo.value ? campo.value.toString().trim() : '';
-        if (!text) return 7;
-
-        const temp = document.createElement('span');
-        temp.style.visibility = 'hidden';
-        temp.style.position = 'absolute';
-        temp.style.whiteSpace = 'nowrap';
-        temp.style.fontFamily = 'Arial, sans-serif';
-        temp.style.fontWeight = '600';
-        temp.textContent = text;
-        document.body.appendChild(temp);
-        
-        let fontSize = 12;
-        let fits = false;
-        
-        while (fontSize >= 5 && !fits) {
-          temp.style.fontSize = fontSize + 'px';
-          const tempRect = temp.getBoundingClientRect();
-          if (tempRect.width < (rect.width - 4) && tempRect.height < (rect.height - 2)) {
-            fits = true;
-          } else {
-            fontSize--;
-          }
-        }
-        
-        document.body.removeChild(temp);
-        return Math.max(5, fontSize);
-      }
-      
-      // 1. Calcular todos los tamaños de fuente sin modificar los elementos visibles
-      const campos = document.querySelectorAll('.campo');
-      const optimalSizes = new Map();
-      campos.forEach(campo => {
-        if (campo.id && campo.type !== 'checkbox') {
-          const size = calcularTamanoOptimo(campo);
-          optimalSizes.set(campo.id, size);
-        }
-      });
-
-      const sidebar = document.querySelector('.sidebar');
-      const originalSidebarDisplay = sidebar.style.display;
-      sidebar.style.display = 'none';
-
-      const originalFormularioStyle = {
-        transform: formulario.style.transform,
-        boxShadow: formulario.style.boxShadow
-      };
-      formulario.style.transform = 'none';
-      formulario.style.boxShadow = 'none';
-      
-      console.log('Capturando formulario...');
-
-      const canvas = await html2canvas(formulario, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#ffffff',
-        logging: false,
-        onclone: (clonedDoc) => {
-            // 2. Aplicar los estilos SOLO al clon del formulario
-            const clonedCampos = clonedDoc.querySelectorAll('.campo');
-            clonedCampos.forEach(campo => {
-                if (campo.id && campo.type !== 'checkbox') {
-                    const optimalSize = optimalSizes.get(campo.id);
-                    if (optimalSize) {
-                        campo.style.fontSize = `${optimalSize}px`;
-                    }
-                    campo.style.color = '#000000';
-                    campo.style.backgroundColor = 'transparent';
-                    campo.style.border = 'none';
-                }
-            });
-        }
-      });
-
-      console.log('Canvas generado. Creando PDF...');
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'letter',
-        compress: true
-      });
-
-      const pageWidth = 215.9;
-      const pageHeight = 279.4;
-      const imgData = canvas.toDataURL('image/jpeg', 0.92);
-      
-      pdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
-      
-      const protocoloSelect = document.getElementById("protocoloSelect");
-      const protocoloId = protocoloSelect.value || 'QCF-1316';
-      const fecha = new Date().toISOString().slice(0, 10);
-      const nombreArchivo = `${protocoloId}_${fecha}.pdf`;
-      
-      pdf.save(nombreArchivo);
-      console.log('PDF generado y descargado.');
-
-      // Restaurar estilos del formulario y sidebar
-      formulario.style.transform = originalFormularioStyle.transform;
-      formulario.style.boxShadow = originalFormularioStyle.boxShadow;
-      sidebar.style.display = originalSidebarDisplay;
-      
-    } catch (error) {
-      console.error('Error generando PDF:', error);
-      alert('Hubo un error al generar el PDF: ' + error.message + '\nIntentando con la impresión estándar...');
-      imprimirFormulario();
-    }
+    alert("La generación de PDF está desactivada temporalmente.");
   }
 
   // Configurar modo de edición

@@ -47,7 +47,7 @@
             <div class="botones">
                 <button class="btn btn-secondary" onclick="limpiarFormulario()">🔄 Nuevo</button>
                 <button class="btn btn-success" onclick="imprimirFormulario()">🖨️ Imprimir</button>
-                <button class="btn btn-primary" onclick="generarPDF()">📄 Generar PDF</button>
+                <button class="btn btn-primary" onclick="generarPDF()" hidden>📄 Generar PDF</button>
             </div>
         </div>
         
@@ -87,6 +87,10 @@
 
         <input type="text" id="subsistema" class="campo medium-text" placeholder="" style="top: 23.6%; left: 29%; width: 15%;">
         <input type="text" id="isometrico" class="campo medium-text" placeholder="" style="top: 23.6%; left: 52.9%; width: 15%;">
+        
+        <input type="text" id="correlativo" class="campo medium-text" placeholder="" style="top: 4.5%; left: 85%; width: 6%;">
+        <input type="text" id="idTestPack" class="campo medium-text" placeholder="" style="top: 16.6%; left: 79%; width: 10%;">
+
         <input type="text" id="hoja" class="campo medium-text" placeholder="" style="top: 23.6%; left: 77.3%; width: 10%;">
 
         <input type="text" id="area" class="campo medium-text" placeholder="" style="top: 26.1%; left: 29%; width: 15%;">
@@ -105,7 +109,7 @@
         <input type="text" id="boltSize" class="campo medium-text" placeholder="" style="top: 40.5%; left: 66.3%; width: 21%;">
         <input type="number" id="boltQty" class="campo small-text" placeholder="" style="top: 44%; left: 32.5%; width: 12.5%;">
         <input type="text" id="lubricantName" class="campo medium-text" placeholder="" style="top: 45.2%; left: 66.3%; width: 21%;">
-        <input type="text" id="washerDesc" class="campo medium-text" placeholder="" style="top: 47%; left: 46%; width: 41.3%;">
+        <input type="text" id="washerDesc" class="campo medium-text" placeholder="" style="top: 47.3%; left: 46%; width: 41.3%;" value="n/a">
         
         <input type="text" id="flangeJoint1" class="campo small-text" placeholder="" style="top: 60%; left: 13%; width: 6%;">
         <input type="text" id="flangeJoint1_30" class="campo small-text" placeholder="" style="top: 60%; left: 19%; width: 6%;">
