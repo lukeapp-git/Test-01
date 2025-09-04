@@ -81,3 +81,32 @@ body {
     bottom: 0;
     width: 100%;
   }
+
+  header {
+    background: #005f73;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  
+  .logo {
+    height: 150px; /* Altura del logo */
+    width: auto;
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 300;
+  }

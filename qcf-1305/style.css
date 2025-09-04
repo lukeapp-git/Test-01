@@ -367,27 +367,3 @@ body {
   max-width: none;
   min-width: 0;
 }
-
-.sidebar-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 1rem;
-  margin-bottom: 1rem; /* Añadido para separar del contenido */
-}
-
-.logo-sidebar {
-  height: 100px; /* Altura del logo en la barra lateral */
-  width: auto;
-}
-
-.sidebar-header h2 {
-  color: #005f73;
-  text-align: center;
-  margin: 0; /* Modificado */
-  font-weight: 400;
-  border-bottom: none; /* Modificado */
-  padding-bottom: 0; /* Modificado */
-}
